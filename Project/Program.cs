@@ -83,6 +83,7 @@ using (var repo = new Repository("C:/Users/Mathias/Desktop/ITU_mappe/3.rd_semest
          }
       }
    }
+   int n = 0;
    void improvedCommitAuthor()
    {
       var authorNameList = (
