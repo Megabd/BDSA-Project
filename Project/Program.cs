@@ -3,9 +3,6 @@
 
 // See https://aka.ms/new-console-template for more information
 
-//Console.WriteLine("Hello, Mortals!");
-
-
 using (var repo = new Repository("C:/Users/Mathias/Desktop/ITU_mappe/3.rd_semester/Analysis, Design and Software Architecture/BDSA-Project"))
 {
    ///get commits from all branches, not just master
@@ -21,8 +18,8 @@ using (var repo = new Repository("C:/Users/Mathias/Desktop/ITU_mappe/3.rd_semest
          authorList.Add(Author);
       }
    }
-
-   string consoleInput = Console.ReadLine();
+   Console.WriteLine("Press 1 for Commit fequency. Press 2 for Commit Author");
+   string consoleInput = Console.ReadLine()!;
    if(consoleInput == "1")
    {
       CommitFequency();
@@ -30,10 +27,6 @@ using (var repo = new Repository("C:/Users/Mathias/Desktop/ITU_mappe/3.rd_semest
    if(consoleInput =="2")
    {
       CommitAuthor();
-   }
-   if(consoleInput == "3")
-   {
-      improvedCommitAuthor();
    }
 
    void CommitFequency()
@@ -51,40 +44,8 @@ using (var repo = new Repository("C:/Users/Mathias/Desktop/ITU_mappe/3.rd_semest
    }
 
    }
+
    void CommitAuthor()
-   {
-      var listOfAuthorsCommitHistorie = (
-         from author in authorList
-         group author by new
-         {
-            author.aName,
-            author.aDate.Date
-         } into g
-         select new{key = g.Key, count = g.Count()}
-      );
-      var l = ( 
-         (from a in listOfAuthorsCommitHistorie
-         select new {name = a.key.aName}).Distinct()
-      );
-
-      foreach(var output in l)
-      {
-         var i = (
-            from h in listOfAuthorsCommitHistorie
-            orderby h.key.Date
-            where h.key.aName == output.name
-            select new {h.key.Date, h.count}
-         );
-         Console.WriteLine(output.name);
-
-         foreach(var commitDate in i)
-         {
-            Console.WriteLine("      " + commitDate.count + " "+ commitDate.Date.ToString("dd-MM-yyyy"));
-         }
-      }
-   }
-   int n = 0;
-   void improvedCommitAuthor()
    {
       var authorNameList = (
          (from author in authorList
