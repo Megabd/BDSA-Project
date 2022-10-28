@@ -3,7 +3,10 @@
 
 // See https://aka.ms/new-console-template for more information
 
-using (var repo = new Repository("C:/Users/Mathias/Desktop/ITU_mappe/3.rd_semester/Analysis, Design and Software Architecture/BDSA-Project"))
+Console.WriteLine("Please enter path to repository");
+string consoleInput = Console.ReadLine()!;
+var repo = new Repository(consoleInput);
+
 {
    ///get commits from all branches, not just master
    var commits = repo.Commits.QueryBy(new CommitFilter { IncludeReachableFrom = repo.Refs });
@@ -11,6 +14,11 @@ using (var repo = new Repository("C:/Users/Mathias/Desktop/ITU_mappe/3.rd_semest
    //here I can access commit's author, but not time
    var authorList = new List<Author>();
 
+    gitCommitInfo(repo);
+
+   void gitCommitInfo(Repository repo)
+   {
+      
    foreach (var Author in commits.Select(com => new Author(com.Author.Name, com.Author.When)))
    {
       if(!authorList.Contains(Author))
@@ -19,7 +27,7 @@ using (var repo = new Repository("C:/Users/Mathias/Desktop/ITU_mappe/3.rd_semest
       }
    }
    Console.WriteLine("Press 1 for Commit fequency. Press 2 for Commit Author");
-   string consoleInput = Console.ReadLine()!;
+   consoleInput = Console.ReadLine()!;
    if(consoleInput == "1")
    {
       CommitFequency();
@@ -27,6 +35,8 @@ using (var repo = new Repository("C:/Users/Mathias/Desktop/ITU_mappe/3.rd_semest
    if(consoleInput =="2")
    {
       CommitAuthor();
+   }
+
    }
 
    void CommitFequency()
