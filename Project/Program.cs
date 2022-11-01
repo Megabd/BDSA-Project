@@ -1,28 +1,30 @@
-﻿
-using LibGit2Sharp;
+﻿using LibGit2Sharp;
 namespace Project;
 
-public class Program{
+public class Program
+{
+    // See https://aka.ms/new-console-template for more information
+    public static void Main(string[] args)
+    {
 
-// See https://aka.ms/new-console-template for more information
+        Console.WriteLine("Please enter path to repository");
+        var pathName = Console.ReadLine();
 
-public static void Main(string[] args){
+        var repo = new UserRepo(pathName!);
 
-Console.WriteLine("Please enter path to repository");
-var pathName = Console.ReadLine();
+        Console.WriteLine("Press 1 for Commit fequency. Press 2 for Commit Author");
+        string consoleInput = Console.ReadLine()!;
+        if (consoleInput == "1")
+        {
+            repo.CommitFrequency();
+        }
+        else if (consoleInput == "2")
+        {
+            repo.CommitAuthor();
+        }
 
-var repo = new UserRepo(pathName);
-   Console.WriteLine("Press 1 for Commit fequency. Press 2 for Commit Author");
-   string consoleInput = Console.ReadLine()!;
-   if(consoleInput == "1")
-   {
-      repo.CommitFequency(repo.authorList);
-   }
-   if(consoleInput =="2")
-   {
-      repo.CommitAuthor(repo.authorList);
-   }
-}
+
+    }
 }
 
 
