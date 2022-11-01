@@ -25,6 +25,15 @@ public class Program
 
 
     }
+
+    String connectionString = "Server=localhost,1433; Database=msdb; User Id=SA; Password=Docker@Password";
+    /*var optionsBuilder = new DbContextOptionsBuilder<//Kontext//>();
+    optionsBuilder.UseSqlServer(connectionString);
+    var context = new //Kontext//(optionsBuilder.Options);
+    EnvironmentVariableTarget connected = ContextBoundObject.Database.CanConnect();
+    Console.WriteLine(connected.ToString());*/
+
+
 }
 
 
