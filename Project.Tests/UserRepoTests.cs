@@ -2,14 +2,14 @@ namespace Project.Tests;
 using LibGit2Sharp;
 using Project;
 
-public class CommitTests
+public class UserRepoTests
 {
 
     public Repository repo;
     private UserRepo _userRepo;
     private StringWriter? _writer;
 
-    public CommitTests() 
+    public UserRepoTests() 
     {
         Repository.Init("./coolRepo");
         repo = new Repository("./coolRepo");
@@ -64,6 +64,18 @@ public class CommitTests
         var output = writer.GetStringBuilder().ToString().TrimEnd();
 
         output.Should().Be("Baldur\r\n      2 01-05-2008\r\n      1 01-05-2088\r\nBenjamin\r\n      1 01-05-2009\r\nNicholas\r\n      1 01-05-2009");
+        Dispose();
+
+    }
+
+    [Fact]
+
+    public void Has_Name_coolRepo()
+    {
+        var userRepo = new UserRepo(repo);
+
+        userRepo.Name.Should().Be("coolRepo");
+
         Dispose();
 
     }
