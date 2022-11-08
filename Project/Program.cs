@@ -1,4 +1,5 @@
 ﻿using LibGit2Sharp;
+using Project.Infrastructure;
 namespace Project;
 
 public class Program
@@ -16,11 +17,11 @@ public class Program
         string consoleInput = Console.ReadLine()!;
         if (consoleInput == "1")
         {
-            repo.CommitFrequency();
+           RepositoryMethods.CommitFrequency(repo);
         }
         else if (consoleInput == "2")
         {
-            repo.CommitAuthor();
+            RepositoryMethods.CommitAuthor(repo);
         }
 
 
