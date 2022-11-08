@@ -1,6 +1,5 @@
 namespace Project.Tests;
 using LibGit2Sharp;
-using Project;
 
 public class CommitTests
 {
