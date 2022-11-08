@@ -1,4 +1,5 @@
-﻿using LibGit2Sharp;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.SqlServer;
 using Project.Infrastructure;
 namespace Project;
 
@@ -7,6 +8,12 @@ public class Program
     // See https://aka.ms/new-console-template for more information
     public static void Main(string[] args)
     {
+        String connectionString = "Server=localhost,1433; Database=msdb; User Id=SA; Password=Docker@Password";
+        var optionsBuilder = new DbContextOptionsBuilder<ProjectContext>();
+        optionsBuilder.UseSqlServer(connectionString);
+        var context = new ProjectContext(optionsBuilder.Options);
+        //EnvironmentVariableTarget connected = ContextBoundObject.Database.CanConnect();
+        //Console.WriteLine(connected.ToString());
 
         Console.WriteLine("Please enter path to repository");
         var pathName = Console.ReadLine();
@@ -26,14 +33,6 @@ public class Program
 
 
     }
-
-    String connectionString = "Server=localhost,1433; Database=msdb; User Id=SA; Password=Docker@Password";
-    /*var optionsBuilder = new DbContextOptionsBuilder<//Kontext//>();
-    optionsBuilder.UseSqlServer(connectionString);
-    var context = new //Kontext//(optionsBuilder.Options);
-    EnvironmentVariableTarget connected = ContextBoundObject.Database.CanConnect();
-    Console.WriteLine(connected.ToString());*/
-
 
 }
 
