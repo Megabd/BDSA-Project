@@ -1,13 +1,13 @@
 namespace Project.Infrastructure;
 
-public class ComAutherResult {
+public class ComAuthorResult {
 
-    string Author {get; set;}
+    string? Author {get; set;}
     int CommitAmount {get; set;}
     DateTime CommitDate {get; set;}
     int RepositoryId {get; set;}
 
-    public ComAutherResult(){
+    public ComAuthorResult(){
 
     }
 

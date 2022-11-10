@@ -1,11 +1,13 @@
+
+
 namespace Project.Infrastructure;
 
 public class GitHubArchive {
 
-    int id {get; set;}
-    string RepositoryName {get; set;}
+    public int Id {get; set;}
+    public string? RepositoryName {get; set;}
 
-    DateTimeOffset LatestCommit {get; set;}
+    public DateTimeOffset LatestCommit {get; set;}
 
     public GitHubArchive(){
         
