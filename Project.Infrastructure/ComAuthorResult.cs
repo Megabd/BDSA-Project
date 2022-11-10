@@ -4,7 +4,7 @@ public class ComAutherResult {
 
     string Author {get; set;}
     int CommitAmount {get; set;}
-    DateTimeOffset CommitDate {get; set;}
+    DateTime CommitDate {get; set;}
     int RepositoryId {get; set;}
 
     public ComAutherResult(){
