@@ -5,7 +5,7 @@ namespace Project.Infrastructure;
 
 
 
-public class UserRepoRepo : IUserRepoRepo {
+public class ComFrequencyResultRepo : IUserRepoRepo {
 
     private readonly ProjectContext _context;
 

@@ -2,10 +2,12 @@ namespace Project.Infrastructure;
 
 public class ComAuthorResult {
 
-    string? Author {get; set;}
-    int CommitAmount {get; set;}
-    DateTime CommitDate {get; set;}
-    int RepositoryId {get; set;}
+
+    public int Id {get; set;}
+    public string? Author {get; set;}
+    public int CommitAmount {get; set;}
+    public DateTime CommitDate {get; set;}
+    public int RepositoryId {get; set;}
 
     public ComAuthorResult(){
 
