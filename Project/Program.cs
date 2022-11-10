@@ -12,7 +12,7 @@ public class Program
         var optionsBuilder = new DbContextOptionsBuilder<ProjectContext>();
         optionsBuilder.UseSqlServer(connectionString);
         var context = new ProjectContext(optionsBuilder.Options);
-        //EnvironmentVariableTarget connected = ContextBoundObject.Database.CanConnect();
+        //var connected = ContextBoundObject.Database.CanConnect();
         //Console.WriteLine(connected.ToString());
 
         Console.WriteLine("Please enter path to repository");

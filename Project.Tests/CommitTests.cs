@@ -3,14 +3,14 @@ using LibGit2Sharp;
 using Project;
 using Project.Infrastructure;
 
-public class UserRepoTests
+public class CommitTests
 {
 
     public Repository repo;
     private UserRepo _userRepo;
     private StringWriter? _writer;
 
-    public UserRepoTests() 
+    public CommitTests() 
     {
         Repository.Init("./coolRepo");
         repo = new Repository("./coolRepo");
@@ -76,8 +76,6 @@ public class UserRepoTests
         var userRepo = new UserRepo(repo);
 
         userRepo.Name.Should().Be("coolRepo");
-
-        Dispose();
 
     }
 
