@@ -13,24 +13,24 @@ public class ComFrequencyResultRepo : IComFrequencyResultRepo {
         _context = context;
     }
 
-public (Response Response, int ComFreResId) Create(CreateComFrequencyResultDTO UserRepo){
+public (Response Response, int ComFreResId) Create(CreateComFrequencyResultDTO ComFreRes){
  
-        Response response;
+    Response response;
 
-
-        var entity = new ComFrequencyResult();/*{
-           Add Information here!
-        };*/
-           
-        _context.FrequencyResults.Add(entity);
-        _context.SaveChanges();
-
-        response = Response.Created;
-
-        var created = new ComFrequencyResultDTO(entity.Id, entity.CommitCount, entity.CommitDate, entity.RepositoryId);
+    var entity = new ComFrequencyResult(){
+        CommitCount = ComFreRes.CommitCount,
+        CommitDate = ComFreRes.CommitDate,
+        RepositoryId = ComFreRes.RepositoryId
+    };
         
-        return (response, created.Id);
+    _context.FrequencyResults.Add(entity);
+    _context.SaveChanges();
 
+    response = Response.Created;
+
+    var created = new ComFrequencyResultDTO(entity.Id, entity.CommitCount, entity.CommitDate, entity.RepositoryId);
+    
+    return (response, created.Id);
 }
 
 
@@ -57,7 +57,7 @@ public ComFrequencyResultDTO? Find(int ComFreqResultId) {
             return ComFreq.FirstOrDefault()!;
         }
         else {
-            return null!;
+            return null;
         }  
 }
 
@@ -70,10 +70,14 @@ public Response Update(UpdateComFrequencyResultDTO ComFreqRes){
         {
             response = Response.NotFound;
         }
-        else
+        else if(entity.CommitCount < ComFreqRes.CommitCount)
         {
             entity.CommitCount = ComFreqRes.CommitCount;
             _context.SaveChanges();
+            response = Response.Updated;
+        }
+        else {
+            //already up to date
             response = Response.Updated;
         }
 

@@ -8,7 +8,7 @@ public class UserRepoRepoTests
 {
     private readonly SqliteConnection _connection;
     private readonly ProjectContext _context;
-    private readonly UserRepoRepo _repository;
+    private readonly GitHubArchiveRepo _repository;
 
     //private readonly SqliteConnection _connection;
 
@@ -27,7 +27,7 @@ public class UserRepoRepoTests
         //_context.Users.AddRange(bob, tim);
         _context.SaveChanges();
 
-        _repository = new UserRepoRepo(_context);
+        _repository = new GitHubArchiveRepo (_context);
     }
     
     }

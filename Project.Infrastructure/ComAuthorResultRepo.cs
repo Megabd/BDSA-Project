@@ -14,9 +14,13 @@ public ComAuthorResultRepo (ProjectContext context){
 public (Response Response, int ComAutResId) Create(CreateComAuthorResultDTO ComAutRes){
         Response response;
 
-        var entity = new ComAuthorResult(); /*{
-            //add values for everything here
-        }*/
+        var entity = new ComAuthorResult(){
+            Author = ComAutRes.Author,
+            CommitCount = ComAutRes.CommitCount,
+            CommitDate = ComAutRes.CommitDate,
+            RepositoryId = ComAutRes.RepositoryId
+
+        }; 
            
         _context.AuthorResults.Add(entity);
         _context.SaveChanges();
@@ -57,20 +61,25 @@ public ComAuthorResultDTO Find (int ComAuthResId){
 
 
 public Response Update (UpdateComAuthorResultDTO ComAuthRes) {
-    Response response;
-    var AuthRes = _context.AuthorResults.Find(ComAuthRes.Id);
+   var entity = _context.FrequencyResults.Find(ComAuthRes.Id);
+        Response response;
 
-    if (AuthRes is null){
-        response = Response.NotFound;
-    }       
+        if (entity is null)
+        {
+            response = Response.NotFound;
+        }
+        else if(entity.CommitCount < ComAuthRes.CommitCount)
+        {
+            entity.CommitCount = ComAuthRes.CommitCount;
+            _context.SaveChanges();
+            response = Response.Updated;
+        }
+        else {
+            //already up to date
+            response = Response.Updated;
+        }
 
-    else {
-        AuthRes.CommitCount = ComAuthRes.CommitCount;
-        _context.SaveChanges();
-        response = Response.Updated;
-    }       
-
-    return response;
+        return response;
 
 }
 

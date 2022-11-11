@@ -30,6 +30,10 @@ public class Program
         {
             RepositoryMethods.CommitAuthor(repo);
         }
+        else if (consoleInput == "3")
+        {
+            RepositoryMethods.latestCommit(pathName);
+        }
 
 
     }

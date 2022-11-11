@@ -1,12 +1,8 @@
 using LibGit2Sharp;
-
 namespace Project.Infrastructure;
 
 
 public class RepositoryMethods {
-
-
-
 public static void addCommitsToRepository(string pathName) {
     List<Commit> CommitList = new List<Commit>();
         using (var repository = new Repository(pathName)){
@@ -57,10 +53,9 @@ public static void addCommitsToRepository(string pathName) {
             var listOfAuthorsCommitHistorie = (
             from author in repository.CommitList
             where author.Author == distAuthor.name
-            orderby author.aDate
+            orderby author.aDate.Date
             group author by new
             {
-                author.aDate,
                 author.aDate.Date
             } into g
             select new { key = g.Key, count = g.Count() }
@@ -68,9 +63,15 @@ public static void addCommitsToRepository(string pathName) {
             foreach (var comDate in listOfAuthorsCommitHistorie)
             {
                 Console.WriteLine("      " + comDate.count + " " + comDate.key.Date.ToString("dd-MM-yyyy"));
+                
             }
         }
     }
-
-
+    public static DateTimeOffset latestCommit(String pathName)
+    {   
+        var repository = new UserRepo(pathName);
+        var result = repository.CommitList.OrderByDescending(x => x.aDate).First();
+        Console.WriteLine("result: " + result.aDate);
+        return result.aDate;
+    }
 }
