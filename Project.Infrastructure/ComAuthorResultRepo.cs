@@ -23,7 +23,7 @@ public (Response Response, int ComAutResId) Create(CreateComAuthorResultDTO ComA
 
         response = Response.Created;
 
-        var created = new ComAuthorResultDTO(entity.Id, entity.Author, entity.CommitAmount, entity.CommitDate, entity.RepositoryId);
+        var created = new ComAuthorResultDTO(entity.Id, entity.Author, entity.CommitCount, entity.CommitDate, entity.RepositoryId);
         
         return (response, created.Id);
 }
@@ -32,7 +32,7 @@ public IReadOnlyCollection<ComAuthorResultDTO> GetComAuthorResults(int Repositor
     var Commits = from c in _context.AuthorResults
                     where c.RepositoryId == RepositoryID
                     orderby c.Author
-                    select new ComAuthorResultDTO(c.Id, c.Author, c.CommitAmount, c.CommitDate, c.RepositoryId);
+                    select new ComAuthorResultDTO(c.Id, c.Author, c.CommitCount, c.CommitDate, c.RepositoryId);
 
         if (Commits.Any()){
             return Commits.ToArray()!;
@@ -40,6 +40,36 @@ public IReadOnlyCollection<ComAuthorResultDTO> GetComAuthorResults(int Repositor
         else {
             return null!;
         }        
+
+}
+
+public ComAuthorResultDTO Find (int ComAuthResId){
+    var AuthRes = from r in _context.AuthorResults
+                  where r.Id == ComAuthResId
+                  select new ComAuthorResultDTO(r.Id, r.Author, r.CommitCount, r.CommitDate, r.RepositoryId);
+    if (AuthRes.Any()){
+            return AuthRes.FirstOrDefault()!;
+        }
+        else {
+            return null!;
+        }              
+}
+
+
+public Response Update (UpdateComAuthorResultDTO ComAuthRes) {
+    Response response;
+    var AuthRes = _context.AuthorResults.Find(ComAuthRes.Id);
+
+    if (AuthRes is null){
+        response = Response.NotFound;
+    }       
+
+    else {
+        AuthRes.CommitCount = ComAuthRes.CommitCount;
+        response = Response.Updated;
+    }       
+
+    return response;
 
 }
 
