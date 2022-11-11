@@ -18,17 +18,16 @@ public (Response Response, int ComFreResId) Create(CreateComFrequencyResultDTO U
         Response response;
 
 
-        var entity = new ComFrequencyResultRepo(UserRepo.repo){
-            Name = UserRepo.RepoName
-        };
+        var entity = new ComFrequencyResult();/*{
+           Add Information here!
+        };*/
            
-        _context.Repositories.Add(entity);
+        _context.FrequencyResults.Add(entity);
         _context.SaveChanges();
 
         response = Response.Created;
-        var commits = new List<int>();
 
-        var created = new ComFrequencyResultDTO(entity.Id, entity.Name, commits);
+        var created = new ComFrequencyResultDTO(entity.Id, entity.CommitCount, entity.CommitDate, entity.RepositoryId);
         
         return (response, created.Id);
 
@@ -36,51 +35,44 @@ public (Response Response, int ComFreResId) Create(CreateComFrequencyResultDTO U
 
 
 public IReadOnlyCollection<ComFrequencyResultDTO> GetComFrequencyResults(int RepositoryId){
- var repositories = from r in _context.FrequencyResults
+ var ComFreqResults = from r in _context.FrequencyResults
                     where r.RepositoryId == RepositoryId
                     orderby r.CommitDate
-                    select new ComFrequencyResultDTO(r.Id, r.Name, r.CommitList.Select(t =>t.Id).ToList<int>().AsReadOnly());
+                    select new ComFrequencyResultDTO(r.Id, r.CommitCount, r.CommitDate, r.RepositoryId);
 
-        if (repositories.Any()){
-            return repositories.ToArray()!;
+        if (ComFreqResults.Any()){
+            return ComFreqResults.ToArray()!;
         }
         else {
             return null!;
         }           
 }
 
-public ComFrequencyResultDTO? Find(int UserRepoId) {
+public ComFrequencyResultDTO? Find(int ComFreqResultId) {
     
-    var Repositories = from r in _context.Repositories
-                            where r.Id == UserRepoId
-                            select new ComFrequencyResultDTO(r.Id, r.Name, r.CommitList.Select(t =>t.Id).ToList<int>().AsReadOnly());
-
-        return Repositories.FirstOrDefault();
+    var ComFreq = from r in _context.FrequencyResults
+                            where r.Id == ComFreqResultId
+                            select new ComFrequencyResultDTO(r.Id, r.CommitCount, r.CommitDate, r.RepositoryId);
+    if (ComFreq.Any()){
+            return ComFreq.FirstOrDefault()!;
+        }
+        else {
+            return null!;
+        }  
 }
 
-public Response Update(UpdateComFrequencyResultDTO UserRepo){
+public Response Update(UpdateComFrequencyResultDTO ComFreqRes){
 
-    var entity = _context.Repositories.Find(UserRepo.Id);
+    var entity = _context.FrequencyResults.Find(ComFreqRes.Id);
         Response response;
 
         if (entity is null)
         {
             response = Response.NotFound;
         }
-        else if (_context.Repositories.FirstOrDefault(r => r.Id != UserRepo.Id && r.Id == UserRepo.Id) != null)
-        {
-            response = Response.Conflict;
-        }
         else
         {
-            entity.Name = ComFrequencyResultDTO.RepoName;
-            var comList = new List<Commit>();
-            foreach (int i in UserRepo.Commits){
-                if((from c in _context.Commits where c.Id== i select c).FirstOrDefault()!= null){
-                    comList.Add((from c in _context.Commits where c.Id== i select c).FirstOrDefault()!);
-                }
-            }
-            entity.CommitList = comList;
+            entity.CommitCount = ComFreqRes.CommitCount;
             _context.SaveChanges();
             response = Response.Updated;
         }

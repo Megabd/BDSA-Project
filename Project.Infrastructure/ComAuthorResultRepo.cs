@@ -66,6 +66,7 @@ public Response Update (UpdateComAuthorResultDTO ComAuthRes) {
 
     else {
         AuthRes.CommitCount = ComAuthRes.CommitCount;
+        _context.SaveChanges();
         response = Response.Updated;
     }       
 
