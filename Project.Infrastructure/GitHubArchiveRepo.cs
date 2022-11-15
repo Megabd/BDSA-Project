@@ -1,7 +1,7 @@
 using Project.Core;
 using Project;
 namespace Project.Infrastructure;
-public class GitHubArchiveRepo //: IGitHubArchiveRepo 
+public class GitHubArchiveRepo : IGitHubArchiveRepo 
 {
 
     private readonly ProjectContext _context;
@@ -11,14 +11,18 @@ public GitHubArchiveRepo (ProjectContext context){
        
 }
 
-    (Response Response, int GitHubArchiveId) Create(CreateGitHubArchiveDTO GitHubArch){
+    public (Response Response, int GitHubArchiveId) Create(CreateGitHubArchiveDTO GitHubArch){
         Response response;
-       
+
+        var check = Find(GitHubArch.RepositoryName);
+        if(check == null){
+
+        
         var entity = new GitHubArchive(){
             RepositoryName = GitHubArch.RepositoryName,
             LatestCommit  = RepositoryMethods.latestCommit(GitHubArch.RepositoryName),
             
-        }; 
+        };
            
         _context.Repositories.Add(entity);
         _context.SaveChanges();
@@ -28,9 +32,15 @@ public GitHubArchiveRepo (ProjectContext context){
         var created = new GitHubArchiveDTO(entity.Id, entity.RepositoryName, entity.LatestCommit);
         
         return (response, created.Id);
+        }
+        else {
+            response = Response.Conflict;
+            int id = check.Id;
+            return (response , id);
+        }
     }
     
-     GitHubArchiveDTO? find(string GitHubArchName){
+    public  GitHubArchiveDTO? Find(string GitHubArchName){
         var GitArch = from r in _context.Repositories
                   where r.RepositoryName == GitHubArchName
                   select new GitHubArchiveDTO(r.Id, r.RepositoryName, r.LatestCommit);
@@ -42,9 +52,9 @@ public GitHubArchiveRepo (ProjectContext context){
         }    
      }
 
-     Response Update(UpdateGitHubArchiveDTO GitHubArch){
+    public Response Update(UpdateGitHubArchiveDTO GitHubArch){
 
-        var entity = _context.Repositories.Find(GitHubArch.Id);
+        var entity = _context.Repositories.Find(GitHubArch.RepositoryName);
         if (entity == null){
             return Response.NotFound;
         }
