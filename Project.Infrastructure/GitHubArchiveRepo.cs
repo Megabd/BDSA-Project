@@ -14,8 +14,11 @@ public GitHubArchiveRepo (ProjectContext context){
     public (Response Response, int GitHubArchiveId) Create(CreateGitHubArchiveDTO GitHubArch){
         Response response;
 
-        var check = Find(GitHubArch.RepositoryName);
-        if(check == null){
+        var existingId = from r in _context.Repositories
+        where r.RepositoryName == GitHubArch.RepositoryName
+        select r.Id;
+        
+        if(existingId.Count() <= 0){
 
         
         var entity = new GitHubArchive(){
@@ -35,14 +38,14 @@ public GitHubArchiveRepo (ProjectContext context){
         }
         else {
             response = Response.Conflict;
-            int id = check.Id;
+            int id = existingId.FirstOrDefault();
             return (response , id);
         }
     }
     
-    public  GitHubArchiveDTO? Find(string GitHubArchName){
+    public  GitHubArchiveDTO? Find(int GitHubArchId){
         var GitArch = from r in _context.Repositories
-                  where r.RepositoryName == GitHubArchName
+                  where r.Id == GitHubArchId
                   select new GitHubArchiveDTO(r.Id, r.RepositoryName, r.LatestCommit);
     if (GitArch.Any()){
             return GitArch.FirstOrDefault()!;
@@ -54,7 +57,7 @@ public GitHubArchiveRepo (ProjectContext context){
 
     public Response Update(UpdateGitHubArchiveDTO GitHubArch){
 
-        var entity = _context.Repositories.Find(GitHubArch.RepositoryName);
+        var entity = _context.Repositories.Find(GitHubArch.Id);
         if (entity == null){
             return Response.NotFound;
         }
