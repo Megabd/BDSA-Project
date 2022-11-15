@@ -9,8 +9,5 @@ public class ComFrequencyResult {
 
     public int RepositoryId {get; set;}
 
-    public ComFrequencyResult(){
-
-    }
 
 }
