@@ -15,13 +15,13 @@ public (Response Response, int ComAutResId) Create(CreateComAuthorResultDTO ComA
         Response response;
 
         var existingId = (
-        from r in _context.FrequencyResults 
+        from r in _context.AuthorResults 
         where r.CommitDate == ComAutRes.CommitDate && r.RepositoryId == ComAutRes.RepositoryId
         select r.Id
         );
 
 
-        if (existingId is null){
+        if (existingId.Count() <= 0 ){
         var entity = new ComAuthorResult(){
             Author = ComAutRes.Author,
             CommitCount = ComAutRes.CommitCount,
@@ -29,6 +29,8 @@ public (Response Response, int ComAutResId) Create(CreateComAuthorResultDTO ComA
             RepositoryId = ComAutRes.RepositoryId
 
         }; 
+
+        Console.WriteLine("Hello there");
            
         _context.AuthorResults.Add(entity);
         
@@ -43,7 +45,9 @@ public (Response Response, int ComAutResId) Create(CreateComAuthorResultDTO ComA
         else {
         Update(new UpdateComAuthorResultDTO(existingId.First(), ComAutRes.CommitCount));
         response = Response.Updated;
-        return (response, existingId.First());
+        _context.SaveChanges();
+
+        return (response, existingId.FirstOrDefault());
         }
 }
 public IReadOnlyCollection<ComAuthorResultDTO> GetComAuthorResults(int RepositoryID) {
