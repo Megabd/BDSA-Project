@@ -30,7 +30,7 @@ public (Response Response, int ComAutResId) Create(CreateComAuthorResultDTO ComA
 
         }; 
 
-        Console.WriteLine("Hello there");
+       
            
         _context.AuthorResults.Add(entity);
         
