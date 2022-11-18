@@ -20,7 +20,6 @@ public class ProjectContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder options){
         if(!options.IsConfigured){
-
             var connectionString = "Server=localhost;Port=5432;Database=BDSADatabase;User Id=postgres;Password=adam123;";
             options.UseNpgsql(connectionString);
 
