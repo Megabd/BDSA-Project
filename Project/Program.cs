@@ -9,6 +9,7 @@ public class Program
     // See https://aka.ms/new-console-template for more information
     public static void Main(string[] args)
     {
+
        var context = new ProjectContext();
 
         Console.WriteLine("Please enter path to repository");
