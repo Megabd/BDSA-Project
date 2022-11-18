@@ -1,4 +1,4 @@
-namespace Project;
+namespace Project.Infrastructure;
 public class Commit 
 {
 

@@ -1,6 +1,6 @@
 using LibGit2Sharp;
 
-namespace Project;
+namespace Project.Infrastructure;
 
 public class UserRepo
 {
@@ -17,8 +17,11 @@ public class UserRepo
         {
             ///get commits from all branches, not just master
             var commits = repo.Commits.QueryBy(new CommitFilter { IncludeReachableFrom = repo.Refs });
-
+    
+            this.Name = pathName.Substring(pathName.LastIndexOf('/') + 1);
+            Console.WriteLine(Name);
             //here I can access commit's author, but not time
+           
 
             foreach (var Author in commits.Select(com => new Commit(com.Author.Name, com.Author.When)))
             {
@@ -38,6 +41,8 @@ public class UserRepo
         var commits = repo.Commits.QueryBy(new CommitFilter { IncludeReachableFrom = repo.Refs });
 
         //here I can access commit's author, but not time
+
+       this.Name = repo.Info.Path.Substring(repo.Info.Path.LastIndexOf('/') + 1);
 
         foreach (var Author in commits.Select(com => new Commit(com.Author.Name, com.Author.When)))
         {
