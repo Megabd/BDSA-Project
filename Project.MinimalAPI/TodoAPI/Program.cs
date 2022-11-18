@@ -1,11 +1,14 @@
 using Project.Infrastructure;
+using Project.Core;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-/* builder.Services.AddDbContext<ProjectContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Project")));
+builder.Services.AddDbContext<ProjectContext>();
 builder.Services.AddScoped<IComAuthorResultRepo, ComAuthorResultRepo>();
 builder.Services.AddScoped<IComFrequencyResultRepo, ComFrequencyResultRepo>();
-builder.Services.AddScoped<IGitHubArchiveRepo, GitHubArchiveRepo>(); */
+builder.Services.AddScoped<IGitHubArchiveRepo, GitHubArchiveRepo>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -23,7 +26,11 @@ app.UseHttpsRedirection();
 /* var commitAuthor = app.MapGroup("/commitAuthor").WithOpenApi();
 var commitFrequency = app.MapGroup("/commitFrequency").WithOpenApi(); */
 
-app.MapGet("/", () => "Hello World!");
+app.MapGet("/", (ProjectContext context) =>  {
+    var path = @"C:\Users\adamj\Documents\Central Vault\ITU\Noter\3. Semester\Analysis, Design and Software Architecture\Project\BDSA-Project";
+    var userRepo = new UserRepo(path);
+    RepositoryMethods.CommitFrequency(userRepo, context);
+});
 
 //app.MapGet("/{RepositoryOwner}/{RepositoryName}", (string RepositoryOwner, string RepositoryName) => RepositoryOwner + "/" + RepositoryName);
 

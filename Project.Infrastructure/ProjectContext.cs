@@ -27,8 +27,13 @@ public class ProjectContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder options){
         if(!options.IsConfigured){
-            String connectionString = "Server=localhost,1433; Database=msdb; User Id=SA; Password=<Docker@Password";
-            options.UseSqlServer(connectionString);
+
+        var _connection = new Microsoft.Data.Sqlite.SqliteConnection("Filename=:memory:");
+        _connection.Open();
+        options.UseSqlite(_connection);
+
+            // String connectionString = "Server=localhost,1433; Database=msdb; User Id=SA; Password=<Docker@Password";
+            // options.UseSqlServer(connectionString);
         }
     }
 
