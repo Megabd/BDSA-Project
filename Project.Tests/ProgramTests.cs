@@ -1,6 +1,6 @@
 namespace Project.Tests;
 using LibGit2Sharp;
-using Project;
+using Project.Core;
 using Project.Infrastructure;
 
 public class UserRepoTests
