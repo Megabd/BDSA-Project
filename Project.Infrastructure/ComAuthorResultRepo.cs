@@ -16,7 +16,7 @@ public (Response Response, int ComAutResId) Create(CreateComAuthorResultDTO ComA
 
         var existingId = (
         from r in _context.AuthorResults 
-        where r.CommitDate == ComAutRes.CommitDate && r.RepositoryId == ComAutRes.RepositoryId
+        where r.CommitDate == ComAutRes.CommitDate && r.Author == ComAutRes.Author
         select r.Id
         );
 
@@ -80,7 +80,7 @@ public ComAuthorResultDTO Find (int ComAuthResId){
 
 
 public Response Update (UpdateComAuthorResultDTO ComAuthRes) {
-   var entity = _context.FrequencyResults.Find(ComAuthRes.Id);
+   var entity = _context.AuthorResults.Find(ComAuthRes.Id);
         Response response;
 
         if (entity is null)

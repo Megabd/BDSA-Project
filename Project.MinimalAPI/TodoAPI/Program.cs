@@ -3,11 +3,11 @@ using Project.Core;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-var builder = WebApplication.CreateBuilder(args);
+//var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = "Server=localhost;Port=5432;Database=BDSADatabase;User Id=postgres;Password=adam123;";
+//var connectionString = "Server=localhost;Port=5432;Database=BDSADatabase;User Id=postgres;Password=adam123;";
 
-builder.Services.AddDbContext<ProjectContext>(options => options.UseNpgsql(connectionString));
+/*builder.Services.AddDbContext<ProjectContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddScoped<IComAuthorResultRepo, ComAuthorResultRepo>();
 builder.Services.AddScoped<IComFrequencyResultRepo, ComFrequencyResultRepo>();
 builder.Services.AddScoped<IGitHubArchiveRepo, GitHubArchiveRepo>();
@@ -28,7 +28,7 @@ app.UseHttpsRedirection();
 /* var commitAuthor = app.MapGroup("/commitAuthor").WithOpenApi();
 var commitFrequency = app.MapGroup("/commitFrequency").WithOpenApi(); */
 
-app.MapGet("/", (ProjectContext context) => {
+/*app.MapGet("/", (ProjectContext context) => {
     var path = @"C:\Users\adamj\Documents\Central Vault\ITU\Noter\3. Semester\Analysis, Design and Software Architecture\Project\BDSA-Project";
     var userRepo = new UserRepo(path);
     RepositoryMethods.CommitFrequency(userRepo, context);
@@ -55,3 +55,4 @@ app.MapGet("/{action}", (int action) => {
 
 
 app.Run();
+*/
