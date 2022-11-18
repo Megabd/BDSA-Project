@@ -1,0 +1,20 @@
+@startuml
+UserRepo <|-- Author
+Database <|-- UserRepo
+
+Class UserRepo {
+    Author[] authorList
+    CommitFrequency()
+    CommitAuthor()
+
+}
+
+Class Author {
+    String : Name
+    DateTimeOffset : Date
+}
+
+Class Database {
+    
+}
+@enduml

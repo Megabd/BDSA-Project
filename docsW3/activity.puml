@@ -1,0 +1,19 @@
+@startuml
+(*) --> "REST API Call"
+if "" then
+  -left->[repository exists] "Updates repository"
+  --> "Analyse repository"
+else
+  ->[repository does not exist] "Clones repository"
+  --> "Analyse repository"
+  endif
+if "" then
+  -left->[if repository not in database] "Store in database"
+  --> "Return JSON object"
+else
+  -right->[if repository in database] "Update database"
+  --> "Return JSON object"
+  --> (*)
+  endif
+
+@enduml
