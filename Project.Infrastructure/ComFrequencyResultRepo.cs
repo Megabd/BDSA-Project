@@ -25,7 +25,7 @@ public (Response Response, int ComFreResId) Create(CreateComFrequencyResultDTO C
 
                     
 
-    if (existingId is null) {
+    if (existingId.Count() <= 0 ) {
 
         var entity = new ComFrequencyResult(){
             CommitCount = ComFreRes.CommitCount,

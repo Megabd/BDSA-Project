@@ -48,7 +48,7 @@ public static void addCommitsToRepository(string pathName) {
         }
 
      var date = latestCommit(archive.Name);
-     var updateAchiveRepo = new UpdateGitHubArchiveDTO(archive.Name,date);
+     var updateAchiveRepo = new UpdateGitHubArchiveDTO(createResponse.GitHubArchiveId,date);
      var updateResponse = archiveRepo.Update(updateAchiveRepo);
     }
 
@@ -90,7 +90,7 @@ public static void addCommitsToRepository(string pathName) {
         }
 
         var date = latestCommit(archive.Name);
-        var updateAchiveRepo = new UpdateGitHubArchiveDTO(archive.Name,date);
+        var updateAchiveRepo = new UpdateGitHubArchiveDTO(createResponse.GitHubArchiveId,date);
         var updateResponse = archiveRepo.Update(updateAchiveRepo);
     }
     public static DateTimeOffset latestCommit(String pathName)
