@@ -9,7 +9,11 @@ public class Program
     // See https://aka.ms/new-console-template for more information
     public static void Main(string[] args)
     {
-       var context = new ProjectContext();
+       var connectionString = "Server=localhost;Port=5432;Database=BDSADatabase;User Id=postgres;Password=adam123;";
+       var builder = new DbContextOptionsBuilder<ProjectContext>();
+       builder.UseNpgsql(connectionString);
+
+       var context = new ProjectContext(builder.Options);
 
         Console.WriteLine("Please enter path to repository");
         var pathName = Console.ReadLine();
