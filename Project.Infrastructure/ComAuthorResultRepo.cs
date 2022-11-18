@@ -15,13 +15,13 @@ public (Response Response, int ComAutResId) Create(CreateComAuthorResultDTO ComA
         Response response;
 
         var existingId = (
-        from r in _context.FrequencyResults 
-        where r.CommitDate == ComAutRes.CommitDate && r.RepositoryId == ComAutRes.RepositoryId
+        from r in _context.AuthorResults 
+        where r.CommitDate == ComAutRes.CommitDate && r.Author == ComAutRes.Author
         select r.Id
         );
 
 
-        if (existingId is null){
+        if (existingId.Count() <= 0 ){
         var entity = new ComAuthorResult(){
             Author = ComAutRes.Author,
             CommitCount = ComAutRes.CommitCount,
@@ -76,7 +76,7 @@ public ComAuthorResultDTO Find (int ComAuthResId){
 
 
 public Response Update (UpdateComAuthorResultDTO ComAuthRes) {
-   var entity = _context.FrequencyResults.Find(ComAuthRes.Id);
+   var entity = _context.AuthorResults.Find(ComAuthRes.Id);
         Response response;
 
         if (entity is null)

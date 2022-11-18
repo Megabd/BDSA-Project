@@ -2,7 +2,7 @@ namespace Project.Tests;
 using LibGit2Sharp;
 using Project;
 using Project.Infrastructure;
-
+// Tests that the program prints the correct results
 public class CommitTests
 {
 
@@ -10,8 +10,29 @@ public class CommitTests
     private UserRepo _userRepo;
     private StringWriter? _writer;
 
+    private readonly SqliteConnection _connection;
+    private readonly ProjectContext _context;
+
     public CommitTests() 
     {
+
+
+        _connection = new SqliteConnection("Filename=:memory:");
+        _connection.Open();
+        var builder = new DbContextOptionsBuilder<ProjectContext>().UseSqlite(_connection);
+        _context = new ProjectContext(builder.Options);
+        _context.Database.EnsureCreated();
+
+        //var bob = new UserRepo("Bob", "bob@mail.com") {Id = 1};
+
+        //var tim = new User("Tim", "tim@mail.com") {Id = 2};
+
+        //_context.Users.AddRange(bob, tim);
+        _context.SaveChanges();
+
+
+
+
         Repository.Init("./coolRepo");
         repo = new Repository("./coolRepo");
         
@@ -42,13 +63,21 @@ public class CommitTests
         _userRepo = new UserRepo(repo);
     }
 
+    [Fact]
+
+    public void Disposer()
+    {
+        Dispose();
+    }
 
     [Fact]
     public void Print_commit_frequency_returns_correct_amount_of_commits() 
     {
         using var writer = new StringWriter();
-        Console.SetOut(writer);
-        _userRepo.CommitFrequency();
+        Console.SetOut(writer); 
+
+        RepositoryMethods.CommitFrequency(_userRepo, _context);
+
         var output = writer.GetStringBuilder().ToString().TrimEnd();
 
         output.Should().Be("2 01-05-2008\r\n2 01-05-2009\r\n1 01-05-2088");
@@ -61,13 +90,16 @@ public class CommitTests
     {
         using var writer = new StringWriter();
         Console.SetOut(writer);
-        _userRepo.CommitAuthor();
+    
+        RepositoryMethods.CommitAuthor(_userRepo, _context);
         var output = writer.GetStringBuilder().ToString().TrimEnd();
 
         output.Should().Be("Baldur\r\n      2 01-05-2008\r\n      1 01-05-2088\r\nBenjamin\r\n      1 01-05-2009\r\nNicholas\r\n      1 01-05-2009");
         Dispose();
 
     }
+
+
 
     [Fact]
 
@@ -99,6 +131,7 @@ public class CommitTests
            
 
         repo.Dispose(); 
+
         
     }
 
