@@ -1,13 +1,12 @@
 using Project.Infrastructure;
 using Project.Core;
+using LibGit2Sharp;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = "Server=localhost;Port=5432;Database=BDSADatabase;User Id=postgres;Password=adam123;";
-
-builder.Services.AddDbContext<ProjectContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<ProjectContext>();
 builder.Services.AddScoped<IComAuthorResultRepo, ComAuthorResultRepo>();
 builder.Services.AddScoped<IComFrequencyResultRepo, ComFrequencyResultRepo>();
 builder.Services.AddScoped<IGitHubArchiveRepo, GitHubArchiveRepo>();
@@ -28,30 +27,18 @@ app.UseHttpsRedirection();
 /* var commitAuthor = app.MapGroup("/commitAuthor").WithOpenApi();
 var commitFrequency = app.MapGroup("/commitFrequency").WithOpenApi(); */
 
-app.MapGet("/", (ProjectContext context) => {
-    var path = @"C:\Users\adamj\Documents\Central Vault\ITU\Noter\3. Semester\Analysis, Design and Software Architecture\Project\BDSA-Project";
-    var userRepo = new UserRepo(path);
-    RepositoryMethods.CommitFrequency(userRepo, context);
+app.MapGet("/0/{RepositoryOwner}/{RepositoryName}", (string RepositoryOwner, string RepositoryName, ProjectContext context) => {
+    var repo = ApiMethods.CloneRepo(RepositoryOwner, RepositoryName);
+    var userRepo = new UserRepo(repo);
+    var results = RepositoryMethods.CommitAuthor(userRepo, context);
+    return results;
 });
 
-//app.MapGet("/{RepositoryOwner}/{RepositoryName}", (string RepositoryOwner, string RepositoryName) => RepositoryOwner + "/" + RepositoryName);
-
-
-app.MapGet("/{action}", (int action) => {
-    var dic = new Dictionary<DateTime, int>();
-    if (action == 1) {
-        dic.Add(DateTime.Now, 0);  
-        dic.Add(DateTime.Now, 3);     
-        dic.Add(DateTime.Now, 6); 
-        dic.Add(DateTime.Now, 5); 
-    } else {
-        dic.Add(DateTime.Now, 0);  
-        dic.Add(DateTime.Now, 0);     
-        dic.Add(DateTime.Now, 1); 
-        dic.Add(DateTime.Now, 5); 
-    }
-    return dic;
+app.MapGet("/1/{RepositoryOwner}/{RepositoryName}", (string RepositoryOwner, string RepositoryName, ProjectContext context) => {
+    var repo = ApiMethods.CloneRepo(RepositoryOwner, RepositoryName);
+    var userRepo = new UserRepo(repo);
+    var results = RepositoryMethods.CommitFrequency(userRepo, context);
+    return results;
 });
-
 
 app.Run();
