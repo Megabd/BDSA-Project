@@ -1,4 +1,6 @@
 global using Xunit;
 global using FluentAssertions;
 global using System.Reflection;
-global using Project;
+global using Microsoft.Data.Sqlite;
+global using Microsoft.EntityFrameworkCore;
+global using Moq;

@@ -1,30 +1,33 @@
 using LibGit2Sharp;
 
-namespace Project;
+namespace Project.Infrastructure;
 
 public class UserRepo
 {
 
-    public List<Author> authorList
-    {
-        get;
-        set;
-    }
+    public List<Commit> CommitList{get;  set;}
+    public string Name {get; set;}
+
+    public int Id {get; set;}
+
     public UserRepo(string pathName)
     {
-        authorList = new List<Author>();
+        CommitList = new List<Commit>();
         using (var repo = new Repository(pathName))
         {
             ///get commits from all branches, not just master
             var commits = repo.Commits.QueryBy(new CommitFilter { IncludeReachableFrom = repo.Refs });
-
+    
+            this.Name = pathName.Substring(pathName.LastIndexOf('/') + 1);
+            Console.WriteLine(Name);
             //here I can access commit's author, but not time
+           
 
-            foreach (var Author in commits.Select(com => new Author(com.Author.Name, com.Author.When)))
+            foreach (var Author in commits.Select(com => new Commit(com.Author.Name, com.Author.When)))
             {
-                if (!authorList.Contains(Author))
+                if (!CommitList.Contains(Author))
                 {
-                    authorList.Add(Author);
+                    CommitList.Add(Author);
                 }
             }
         }
@@ -33,17 +36,19 @@ public class UserRepo
 
     public UserRepo(Repository repo)
     {
-        authorList = new List<Author>();
+        CommitList = new List<Commit>();
 
         var commits = repo.Commits.QueryBy(new CommitFilter { IncludeReachableFrom = repo.Refs });
 
         //here I can access commit's author, but not time
 
-        foreach (var Author in commits.Select(com => new Author(com.Author.Name, com.Author.When)))
+       this.Name = repo.Info.Path.Substring(repo.Info.Path.LastIndexOf('/') + 1);
+
+        foreach (var Author in commits.Select(com => new Commit(com.Author.Name, com.Author.When)))
         {
-            if (!authorList.Contains(Author))
+            if (!CommitList.Contains(Author))
             {
-                authorList.Add(Author);
+                CommitList.Add(Author);
             }
         }
     }
@@ -52,7 +57,7 @@ public class UserRepo
     public void CommitFrequency()
     {
         var listOfUniqueDates = (
-        from author in authorList
+        from author in CommitList
         orderby author.aDate
         group author by new { author.aDate.Date } into g
         select new { date = g.Key, count = g.Count() }
@@ -68,9 +73,9 @@ public class UserRepo
     public void CommitAuthor()
     {
         var authorNameList = (
-           (from author in authorList
-            orderby author.aName
-            select new { name = author.aName }).Distinct()
+           (from author in CommitList
+            orderby author.Author
+            select new { name = author.Author }).Distinct()
         );
         
         foreach (var distAuthor in authorNameList)
@@ -78,12 +83,12 @@ public class UserRepo
             Console.WriteLine(distAuthor.name);
 
             var listOfAuthorsCommitHistorie = (
-            from author in authorList
-            where author.aName == distAuthor.name
+            from author in CommitList
+            where author.Author == distAuthor.name
             orderby author.aDate
             group author by new
             {
-                author.aName,
+                author.aDate,
                 author.aDate.Date
             } into g
             select new { key = g.Key, count = g.Count() }
