@@ -1,21 +1,21 @@
-namespace Project.Tests;
+// namespace Project.Tests;
 
-public class IntegrationTests {
+// public class IntegrationTests {
 
-    IntegrationTestFactory _factory;
+//     IntegrationTestFactory _factory;
 
-    public IntegrationTests() {
-        _factory = new IntegrationTestFactory();
-    }
+//     public IntegrationTests() {
+//         _factory = new IntegrationTestFactory();
+//     }
 
-    [Fact]
-    public async Task someTest() {
-        var client = _factory.CreateClient();
+//     [Fact]
+//     public async Task someTest() {
+//         var client = _factory.CreateClient();
 
-        // do stuff
+//         // do stuff
 
-        // assert
-    }
+//         // assert
+//     }
 
 
-}
+// }
