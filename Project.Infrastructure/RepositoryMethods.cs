@@ -23,8 +23,10 @@ public static void addCommitsToRepository(string pathName) {
         }
 }
 
- public static void CommitFrequency(UserRepo archive, ProjectContext context)
+ public static Dictionary<String, int> CommitFrequency(UserRepo archive, ProjectContext context)
     {
+
+        var results = new Dictionary<String, int>();
     
     var archiveRepo = new GitHubArchiveRepo(context);
     var GitHubArch = new CreateGitHubArchiveDTO(archive.Name);
@@ -44,16 +46,22 @@ public static void addCommitsToRepository(string pathName) {
             var createComFreResult = new CreateComFrequencyResultDTO(output.count,output.date.Date,createResponse.GitHubArchiveId);
             comFrequencyResultRepo.Create(createComFreResult);
             Console.WriteLine(output.count + " " + output.date.Date.ToString("dd-MM-yyyy"));
+            results.Add(output.date.Date.ToString("dd-MM-yyyy"), output.count);
 
         }
 
      var date = latestCommit(archive.Name);
      var updateAchiveRepo = new UpdateGitHubArchiveDTO(createResponse.GitHubArchiveId,date);
      var updateResponse = archiveRepo.Update(updateAchiveRepo);
+
+     return results;
     }
 
-    public static void CommitAuthor(UserRepo archive, ProjectContext context)
+    public static Dictionary<String, Dictionary<String, int>> CommitAuthor(UserRepo archive, ProjectContext context)
     {
+
+        var results = new Dictionary<String, Dictionary<String, int>>();
+
         var archiveRepo = new GitHubArchiveRepo(context);
         var GitHubArch = new CreateGitHubArchiveDTO(archive.Name);
         var createResponse = archiveRepo.Create(GitHubArch);
@@ -69,6 +77,7 @@ public static void addCommitsToRepository(string pathName) {
         foreach (var distAuthor in authorNameList)
         {
             Console.WriteLine(distAuthor.name);
+            var authorCommitsDict = new Dictionary<String, int>();
 
             var listOfAuthorsCommitHistorie = (
             from author in archive.CommitList
@@ -85,13 +94,16 @@ public static void addCommitsToRepository(string pathName) {
                 var createComAuthResult = new CreateComAuthorResultDTO(distAuthor.name,comDate.count, comDate.key.Date,createResponse.GitHubArchiveId);
                 comAuthResultRepo.Create(createComAuthResult);
                 Console.WriteLine("      " + comDate.count + " " + comDate.key.Date.ToString("dd-MM-yyyy"));
-                
+                authorCommitsDict.Add(comDate.key.Date.ToString("dd-MM-yyyy"), comDate.count);
             }
+            results.Add(distAuthor.ToString()!, authorCommitsDict);
         }
 
         var date = latestCommit(archive.Name);
         var updateAchiveRepo = new UpdateGitHubArchiveDTO(createResponse.GitHubArchiveId,date);
         var updateResponse = archiveRepo.Update(updateAchiveRepo);
+
+        return results;
     }
     public static DateTimeOffset latestCommit(String pathName)
     {   

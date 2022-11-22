@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.Sqlite;
 namespace Project.Infrastructure;
 
 public class ProjectContext : DbContext
@@ -11,6 +12,10 @@ public class ProjectContext : DbContext
 
     }
     
+    public ProjectContext() {
+
+    }
+
     public ProjectContext(DbContextOptions<ProjectContext> options) : base(options) {
 
     }

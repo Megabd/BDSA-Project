@@ -12,8 +12,8 @@ using Project.Infrastructure;
 namespace Project.Infrastructure.Migrations
 {
     [DbContext(typeof(ProjectContext))]
-    [Migration("20221115123409_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20221118133918_Migrations")]
+    partial class Migrations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
