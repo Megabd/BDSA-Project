@@ -80,7 +80,7 @@ public class CommitTests
 
         var output = writer.GetStringBuilder().ToString().TrimEnd();
 
-        output.Should().Be("2 01-05-2008\r\n2 01-05-2009\r\n1 01-05-2088");
+        output.Should().Contain("2 01-05-2008\r\n2 01-05-2009\r\n1 01-05-2088");
         Dispose();
 
     }
@@ -94,7 +94,7 @@ public class CommitTests
         RepositoryMethods.CommitAuthor(_userRepo, _context);
         var output = writer.GetStringBuilder().ToString().TrimEnd();
 
-        output.Should().Be("Baldur\r\n      2 01-05-2008\r\n      1 01-05-2088\r\nBenjamin\r\n      1 01-05-2009\r\nNicholas\r\n      1 01-05-2009");
+        output.Should().Contain("Baldur\r\n      2 01-05-2008\r\n      1 01-05-2088\r\nBenjamin\r\n      1 01-05-2009\r\nNicholas\r\n      1 01-05-2009");
         Dispose();
 
     }
@@ -107,7 +107,7 @@ public class CommitTests
     {
         var userRepo = new UserRepo(repo);
 
-        userRepo.Name.Should().Be("coolRepo");
+        userRepo.Name.Should().Contain("coolRepo");
 
     }
 
