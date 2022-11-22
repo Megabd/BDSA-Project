@@ -4,7 +4,7 @@ using LibGit2Sharp;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-//var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ProjectContext>();
 builder.Services.AddScoped<IComAuthorResultRepo, ComAuthorResultRepo>();
