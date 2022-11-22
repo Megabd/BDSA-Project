@@ -11,10 +11,6 @@ public class ProjectContext : DbContext
     public ProjectContext () {
 
     }
-    
-    public ProjectContext() {
-
-    }
 
     public ProjectContext(DbContextOptions<ProjectContext> options) : base(options) {
 

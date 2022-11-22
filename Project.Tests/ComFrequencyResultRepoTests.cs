@@ -8,7 +8,6 @@ public class CommitFrequencyResultRepoTests
 
     public Repository repo;
     private UserRepo _userRepo;
-    private StringWriter? _writer;
 
     private readonly SqliteConnection _connection;
     private readonly ProjectContext _context;
@@ -26,8 +25,8 @@ public class CommitFrequencyResultRepoTests
         _context = new ProjectContext(builder.Options);
         _context.Database.EnsureCreated();
 
-        Repository.Init("./coolRepo");
-        repo = new Repository("./coolRepo");
+        Repository.Init("coolRepo");
+        repo = new Repository("coolRepo");
         
         var commitOptions = new CommitOptions();
         commitOptions.AllowEmptyCommit = true;
@@ -74,9 +73,6 @@ public class CommitFrequencyResultRepoTests
         response.Should().Be(Response.Created);
 
         createdId.Should().Be(4);
-
-        Dispose();
-
     }
 
     [Fact] 
@@ -87,9 +83,6 @@ public class CommitFrequencyResultRepoTests
         response.Should().Be(Response.Updated);
         
         createdId.Should().Be(2);
-
-        Dispose();
-
     }
 
     [Fact] 
@@ -101,9 +94,6 @@ public class CommitFrequencyResultRepoTests
 
         actual.Should().BeEquivalentTo(expected);
 
-
-        Dispose();
-
     }
 
      [Fact] 
@@ -113,8 +103,6 @@ public class CommitFrequencyResultRepoTests
 
         actual.Should().Be(null);
 
-
-        Dispose();
 
     }
 
@@ -128,8 +116,6 @@ public class CommitFrequencyResultRepoTests
 
         _repository.Find(2)!.CommitCount.Should().Be(actualValue);
 
-        Dispose();
-
     }
     [Fact] 
     public void Update_succes_changes (){
@@ -140,8 +126,6 @@ public class CommitFrequencyResultRepoTests
 
         _repository.Find(2)!.CommitCount.Should().Be(3);
 
-        Dispose();
-
     }
 
  [Fact] 
@@ -151,34 +135,33 @@ public class CommitFrequencyResultRepoTests
 
         actual.Should().Be(Response.NotFound);
 
-        Dispose();
-
     }
-
 
     public void Dispose()
     {
-        System.IO.DirectoryInfo di = new DirectoryInfo("./coolRepo");
 
-            foreach (FileInfo file in di.GetFiles())
-            {
-                 file.Delete(); 
-            }
-            foreach (DirectoryInfo dir in di.GetDirectories())
-            {
-                try{
-                dir.Delete(true); 
-                }
-                catch (Exception e){
-                    Console.WriteLine(e.Message);
-                }
-            }
+        DeleteReadOnlyDirectory("coolRepo");
+            
            
-
-        repo.Dispose(); 
         _connection.Dispose();
+        repo.Dispose(); 
         _context.Dispose();
 
         
     }
+
+    public static void DeleteReadOnlyDirectory(string directory)
+{
+    foreach (var subdirectory in Directory.EnumerateDirectories(directory)) 
+    {
+        DeleteReadOnlyDirectory(subdirectory);
+    }
+    foreach (var fileName in Directory.EnumerateFiles(directory))
+    {
+        var fileInfo = new FileInfo(fileName);
+        fileInfo.Attributes = FileAttributes.Normal;
+        fileInfo.Delete();
+    }
+    Directory.Delete(directory);
+}
 }

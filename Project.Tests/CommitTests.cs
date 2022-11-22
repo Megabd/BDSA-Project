@@ -33,8 +33,8 @@ public class CommitTests
 
 
 
-        Repository.Init("./coolRepo");
-        repo = new Repository("./coolRepo");
+        Repository.Init("coolRepo");
+        repo = new Repository("coolRepo");
         
         var commitOptions = new CommitOptions();
         commitOptions.AllowEmptyCommit = true;
@@ -64,13 +64,6 @@ public class CommitTests
     }
 
     [Fact]
-
-    public void Disposer()
-    {
-        Dispose();
-    }
-
-    [Fact]
     public void Print_commit_frequency_returns_correct_amount_of_commits() 
     {
         using var writer = new StringWriter();
@@ -81,7 +74,6 @@ public class CommitTests
         var output = writer.GetStringBuilder().ToString().TrimEnd();
 
         output.Should().Contain("2 01-05-2008\r\n2 01-05-2009\r\n1 01-05-2088");
-        Dispose();
 
     }
 
@@ -95,7 +87,6 @@ public class CommitTests
         var output = writer.GetStringBuilder().ToString().TrimEnd();
 
         output.Should().Contain("Baldur\r\n      2 01-05-2008\r\n      1 01-05-2088\r\nBenjamin\r\n      1 01-05-2009\r\nNicholas\r\n      1 01-05-2009");
-        Dispose();
 
     }
 
@@ -113,27 +104,31 @@ public class CommitTests
 
     public void Dispose()
     {
-        System.IO.DirectoryInfo di = new DirectoryInfo("./coolRepo");
 
-            foreach (FileInfo file in di.GetFiles())
-            {
-                 file.Delete(); 
-            }
-            foreach (DirectoryInfo dir in di.GetDirectories())
-            {
-                try{
-                dir.Delete(true); 
-                }
-                catch (Exception e){
-                    Console.WriteLine(e.Message);
-                }
-            }
+        DeleteReadOnlyDirectory("coolRepo");
+            
            
-
+        _connection.Dispose();
         repo.Dispose(); 
+        _context.Dispose();
 
         
     }
+
+    public static void DeleteReadOnlyDirectory(string directory)
+{
+    foreach (var subdirectory in Directory.EnumerateDirectories(directory)) 
+    {
+        DeleteReadOnlyDirectory(subdirectory);
+    }
+    foreach (var fileName in Directory.EnumerateFiles(directory))
+    {
+        var fileInfo = new FileInfo(fileName);
+        fileInfo.Attributes = FileAttributes.Normal;
+        fileInfo.Delete();
+    }
+    Directory.Delete(directory);
+}
 
     // [Fact]
     // // Uses https://github.com/katrinesando/BDSA_assignment-02

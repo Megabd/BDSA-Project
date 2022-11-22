@@ -8,7 +8,6 @@ public class GitHubArchiveRepoTests
 
     public Repository repo;
     private UserRepo _userRepo;
-    private StringWriter? _writer;
 
     private readonly SqliteConnection _connection;
     private readonly ProjectContext _context;
@@ -81,8 +80,6 @@ public class GitHubArchiveRepoTests
         actual.Response.Should().Be(Response.Created);
         actual.GitHubArchiveId.Should().Be(2);
 
-        Dispose();
-
     }
 
     [Fact] 
@@ -93,17 +90,12 @@ public class GitHubArchiveRepoTests
         actual.Response.Should().Be(Response.Conflict);
         actual.GitHubArchiveId.Should().Be(1);
 
-        Dispose();
-
     }
 
     [Fact] 
     public void Find_Succes (){
         // Don't know why gitlib2sharp gives this name
         _repository.Find(1).Should().BeEquivalentTo(new GitHubArchiveDTO(1,"c:\\Users\\Baldur Thomsen\\Analyse og Design\\BDSA-Project\\Project.Tests\\bin\\Debug\\net6.0\\coolRepo\\.git\\",new DateTimeOffset(new DateTime(2088, 5, 1, 12, 35, 40))));
-
-
-        Dispose();
 
     }
 
@@ -112,8 +104,6 @@ public class GitHubArchiveRepoTests
 
         _repository.Find(22).Should().Be(null);
 
-
-        Dispose();
 
     }
 
@@ -125,8 +115,6 @@ public class GitHubArchiveRepoTests
 
         actual.Should().Be(Response.Updated);
        _repository.Find(1)!.LatestCommit.Should().Be(beforeDate);
-        
-        Dispose();
 
     }
     [Fact] 
@@ -138,7 +126,6 @@ public class GitHubArchiveRepoTests
         actual.Should().Be(Response.Updated);
        _repository.Find(1)!.LatestCommit.Should().Be(newDate);
 
-        Dispose();
 
     }
 
@@ -150,49 +137,35 @@ public class GitHubArchiveRepoTests
 
         actual.Should().Be(Response.NotFound);
 
-        Dispose();
 
     }
 
 
-    public void Dispose()
+   public void Dispose()
     {
-        System.IO.DirectoryInfo di = new DirectoryInfo("./coolRepo");
-        System.IO.DirectoryInfo di2 = new DirectoryInfo("./funnyRepo");
 
-            foreach (FileInfo file in di.GetFiles())
-            {
-                 file.Delete(); 
-            }
-            foreach (DirectoryInfo dir in di.GetDirectories())
-            {
-                try{
-                dir.Delete(true); 
-                }
-                catch (Exception e){
-                    Console.WriteLine(e.Message);
-                }
-            }
-
-            foreach (FileInfo file in di2.GetFiles())
-            {
-                 file.Delete(); 
-            }
-            foreach (DirectoryInfo dir in di2.GetDirectories())
-            {
-                try{
-                dir.Delete(true); 
-                }
-                catch (Exception e){
-                    Console.WriteLine(e.Message);
-                }
-            }
+        DeleteReadOnlyDirectory("coolRepo");
+            
            
-
-        repo.Dispose(); 
         _connection.Dispose();
+        repo.Dispose(); 
         _context.Dispose();
 
         
     }
+
+    public static void DeleteReadOnlyDirectory(string directory)
+{
+    foreach (var subdirectory in Directory.EnumerateDirectories(directory)) 
+    {
+        DeleteReadOnlyDirectory(subdirectory);
+    }
+    foreach (var fileName in Directory.EnumerateFiles(directory))
+    {
+        var fileInfo = new FileInfo(fileName);
+        fileInfo.Attributes = FileAttributes.Normal;
+        fileInfo.Delete();
+    }
+    Directory.Delete(directory);
+}
 }
