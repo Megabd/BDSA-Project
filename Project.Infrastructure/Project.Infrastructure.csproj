@@ -3,7 +3,7 @@
     <ItemGroup>
    <PackageReference Include="LibGit2Sharp" Version="0.26.2" />
    <PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.10" />
-       <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.10" />
+   <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.10">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

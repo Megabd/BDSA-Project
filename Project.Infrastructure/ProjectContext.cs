@@ -7,6 +7,10 @@ public class ProjectContext : DbContext
     public DbSet<ComAuthorResult> AuthorResults => Set<ComAuthorResult>();
     public DbSet<ComFrequencyResult> FrequencyResults => Set<ComFrequencyResult>();
     public DbSet<GitHubArchive> Repositories => Set<GitHubArchive>();
+
+    public ProjectContext () {
+
+    }
     
     public ProjectContext() {
 

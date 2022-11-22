@@ -4,7 +4,7 @@ using LibGit2Sharp;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-var builder = WebApplication.CreateBuilder(args);
+//var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ProjectContext>();
 builder.Services.AddScoped<IComAuthorResultRepo, ComAuthorResultRepo>();
@@ -32,6 +32,7 @@ app.MapGet("/0/{RepositoryOwner}/{RepositoryName}", (string RepositoryOwner, str
     var userRepo = new UserRepo(repo);
     var results = RepositoryMethods.CommitAuthor(userRepo, context);
     return results;
+
 });
 
 app.MapGet("/1/{RepositoryOwner}/{RepositoryName}", (string RepositoryOwner, string RepositoryName, ProjectContext context) => {
