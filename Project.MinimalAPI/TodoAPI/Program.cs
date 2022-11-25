@@ -27,7 +27,7 @@ app.UseHttpsRedirection();
 /* var commitAuthor = app.MapGroup("/commitAuthor").WithOpenApi();
 var commitFrequency = app.MapGroup("/commitFrequency").WithOpenApi(); */
 
-app.MapGet("/0/{RepositoryOwner}/{RepositoryName}", (string RepositoryOwner, string RepositoryName, ProjectContext context) => {
+app.MapGet("/author/{RepositoryOwner}/{RepositoryName}", (string RepositoryOwner, string RepositoryName, ProjectContext context) => {
     var repo = ApiMethods.CloneRepo(RepositoryOwner, RepositoryName);
     var userRepo = new UserRepo(repo);
     var results = RepositoryMethods.CommitAuthor(userRepo, context);
@@ -35,10 +35,16 @@ app.MapGet("/0/{RepositoryOwner}/{RepositoryName}", (string RepositoryOwner, str
 
 });
 
-app.MapGet("/1/{RepositoryOwner}/{RepositoryName}", (string RepositoryOwner, string RepositoryName, ProjectContext context) => {
+app.MapGet("/frequency/{RepositoryOwner}/{RepositoryName}", (string RepositoryOwner, string RepositoryName, ProjectContext context) => {
     var repo = ApiMethods.CloneRepo(RepositoryOwner, RepositoryName);
     var userRepo = new UserRepo(repo);
     var results = RepositoryMethods.CommitFrequency(userRepo, context);
+    return results;
+});
+
+app.MapGet("/forks/{RepositoryOwner}/{RepositoryName}", (string RepositoryOwner, string RepositoryName, ProjectContext context) => {
+    var repo = ApiMethods.CloneRepo(RepositoryOwner, RepositoryName);
+    var results = ApiMethods.GetForks(repo);
     return results;
 });
 
