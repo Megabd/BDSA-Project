@@ -26,16 +26,21 @@ public class ApiMethods {
         return totalPath;
     }
 
-    public static int GetForks(string repo) {
-        try {
+    // public static async Task<string> GetForks(string repo) {
+    //     try {
+    //         var requestContent = new FormUrlEncodedContent(new [] {
+    //             new KeyValuePair<string, string>("-H", "Accept: application/vnd.github+json"),
+    //             new KeyValuePair<string, string>("-H", "Authorization: Bearer "+"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"),
+    //         });
 
-            
-            using HttpResponseMessage response = await client.GetAsync("https://github.com/repos/"+repo+"forks");
-        }
-        catch (HttpRequestException e) {
-            Console.WriteLine("Error: " + e.Message);
-        }
-    }
+    //         using HttpResponseMessage response = await client.PostAsync("https://github.com/repos/"+repo+"forks", requestContent);
+    //         return response.Content.ToString();
+    //     }
+    //     catch (HttpRequestException e) {
+    //         Console.WriteLine("Error: " + e.Message);
+    //         return "";
+    //     }
+    // }
 
 
 }
