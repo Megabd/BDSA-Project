@@ -26,9 +26,11 @@ public class ApiMethods {
         return totalPath;
     }
 
-    public static async Task<int> GetForks(string repoOwner, string repoName) {
+    public static async Task<int> GetForks(string repoOwner, string repoName, string githubAPI) {
 
         var client = new GitHubClient(new ProductHeaderValue("Github-insights"));
+        var token = new Octokit.Credentials(githubAPI);
+        client.Credentials = token;
 
         var forks = await client.Repository.Forks.GetAll(repoOwner, repoName);
         return forks.Count;

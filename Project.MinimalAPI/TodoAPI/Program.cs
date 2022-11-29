@@ -5,6 +5,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+var githubAPIString = builder.Configuration["GithubAPI"]; 
 
 builder.Services.AddDbContext<ProjectContext>();
 builder.Services.AddScoped<IComAuthorResultRepo, ComAuthorResultRepo>();
@@ -43,7 +44,7 @@ app.MapGet("/frequency/{RepositoryOwner}/{RepositoryName}", (string RepositoryOw
 });
 
 app.MapGet("/forks/{RepositoryOwner}/{RepositoryName}", (string RepositoryOwner, string RepositoryName, ProjectContext context) => {
-    var results = ApiMethods.GetForks(RepositoryOwner, RepositoryName);
+    var results = ApiMethods.GetForks(RepositoryOwner, RepositoryName, githubAPIString);
     return results;
 });
 
