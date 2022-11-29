@@ -43,8 +43,7 @@ app.MapGet("/frequency/{RepositoryOwner}/{RepositoryName}", (string RepositoryOw
 });
 
 app.MapGet("/forks/{RepositoryOwner}/{RepositoryName}", (string RepositoryOwner, string RepositoryName, ProjectContext context) => {
-    var repo = ApiMethods.CloneRepo(RepositoryOwner, RepositoryName);
-    var results = ApiMethods.GetForks(repo);
+    var results = ApiMethods.GetForks(RepositoryOwner, RepositoryName);
     return results;
 });
 
