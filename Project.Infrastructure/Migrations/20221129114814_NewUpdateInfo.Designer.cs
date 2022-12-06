@@ -12,8 +12,8 @@ using Project.Infrastructure;
 namespace Project.Infrastructure.Migrations
 {
     [DbContext(typeof(ProjectContext))]
-    [Migration("20221118133918_Migrations")]
-    partial class Migrations
+    [Migration("20221129114814_NewUpdateInfo")]
+    partial class NewUpdateInfo
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -76,6 +76,28 @@ namespace Project.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("FrequencyResults");
+                });
+
+            modelBuilder.Entity("Project.Infrastructure.Fork", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ForkName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RepositoryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id")
+                        .IsUnique();
+
+                    b.ToTable("ForkResults");
                 });
 
             modelBuilder.Entity("Project.Infrastructure.GitHubArchive", b =>

@@ -29,10 +29,11 @@ public static void addCommitsToRepository(string pathName) {
         var results = new Dictionary<String, int>();
     
     var archiveRepo = new GitHubArchiveRepo(context);
-    var GitHubArch = new CreateGitHubArchiveDTO(archive.Name);
+    var GitHubArch = new CreateGitHubArchiveDTO(archive.Name, latestCommit(archive));
     var createResponse = archiveRepo.Create(GitHubArch);
 
     var comFrequencyResultRepo = new ComFrequencyResultRepo(context);
+    var testForkRepo = new ForkRepo(context);
 
         var listOfUniqueDates = (
         from author in archive.CommitList
@@ -50,9 +51,12 @@ public static void addCommitsToRepository(string pathName) {
 
         }
 
-     var date = latestCommit(archive.Name);
+     var date = latestCommit(archive);
      var updateAchiveRepo = new UpdateGitHubArchiveDTO(createResponse.GitHubArchiveId,date);
      var updateResponse = archiveRepo.Update(updateAchiveRepo);
+     var createFork = new CreateForkDTO("testName", 5);
+     testForkRepo.Create(createFork);
+
 
      return results;
     }
@@ -63,7 +67,7 @@ public static void addCommitsToRepository(string pathName) {
         var results = new Dictionary<String, Dictionary<String, int>>();
 
         var archiveRepo = new GitHubArchiveRepo(context);
-        var GitHubArch = new CreateGitHubArchiveDTO(archive.Name);
+        var GitHubArch = new CreateGitHubArchiveDTO(archive.Name, latestCommit(archive));
         var createResponse = archiveRepo.Create(GitHubArch);
 
         var comAuthResultRepo = new ComAuthorResultRepo(context);
@@ -99,19 +103,23 @@ public static void addCommitsToRepository(string pathName) {
             results.Add(distAuthor.ToString()!, authorCommitsDict);
         }
 
-        var date = latestCommit(archive.Name);
+        var date = latestCommit(archive);
         var updateAchiveRepo = new UpdateGitHubArchiveDTO(createResponse.GitHubArchiveId,date);
         var updateResponse = archiveRepo.Update(updateAchiveRepo);
 
+        foreach (string key in results.Keys){
+            Console.WriteLine(key);
+        }
+
         return results;
     }
-    public static DateTimeOffset latestCommit(String pathName)
+    public static DateTimeOffset latestCommit(UserRepo archive)
     {   
-        var repository = new UserRepo(pathName);
-        var result = repository.CommitList.OrderByDescending(x => x.aDate).First();
+        var result = archive.CommitList.OrderByDescending(x => x.aDate).First();
         Console.WriteLine("result: " + result.aDate);
         return result.aDate;
     }
+
 
 
     public static void UpdateRepository (String pathName) {
@@ -119,4 +127,6 @@ public static void addCommitsToRepository(string pathName) {
         
 
     }
+
+    
 }

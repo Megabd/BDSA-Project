@@ -8,6 +8,8 @@ public class ProjectContext : DbContext
     public DbSet<ComFrequencyResult> FrequencyResults => Set<ComFrequencyResult>();
     public DbSet<GitHubArchive> Repositories => Set<GitHubArchive>();
 
+    public DbSet<Fork> ForkResults => Set<Fork>();
+
     public ProjectContext () {
 
     }
@@ -21,6 +23,7 @@ public class ProjectContext : DbContext
         modelBuilder.Entity<GitHubArchive>().HasIndex(g=>g.RepositoryName).IsUnique();
         modelBuilder.Entity<ComAuthorResult>().HasIndex(c=>c.Id).IsUnique();
         modelBuilder.Entity<ComFrequencyResult>().HasIndex(c=>c.Id).IsUnique();
+        modelBuilder.Entity<Fork>().HasIndex(f=>f.Id).IsUnique();
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder options){

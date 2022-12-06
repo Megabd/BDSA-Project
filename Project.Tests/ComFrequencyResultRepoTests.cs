@@ -6,16 +6,11 @@ using Project.Infrastructure;
 public class CommitFrequencyResultRepoTests
 {
 
-    public Repository repo;
-    private UserRepo _userRepo;
-    private StringWriter? _writer;
-
     private readonly SqliteConnection _connection;
     private readonly ProjectContext _context;
 
     private readonly ComFrequencyResultRepo _repository;
 
-    private readonly int myRepoId;
     public CommitFrequencyResultRepoTests() 
     {
 
@@ -26,40 +21,30 @@ public class CommitFrequencyResultRepoTests
         _context = new ProjectContext(builder.Options);
         _context.Database.EnsureCreated();
 
-        Repository.Init("./coolRepo");
-        repo = new Repository("./coolRepo");
+         var ComFreqRes1 = new ComFrequencyResult {
+            Id = 1,
+            CommitCount = 10,
+            CommitDate = new DateTime(2022, 11, 20),
+            RepositoryId = 1,
+        };
+            
+
+         var ComFreqRes2= new ComFrequencyResult {
+            Id = 2,
+            CommitCount = 8,
+            CommitDate = new DateTime(2022,10, 6),
+            RepositoryId = 1
+            
+        };
+        _context.FrequencyResults.AddRange(ComFreqRes1,ComFreqRes2);
         
-        var commitOptions = new CommitOptions();
-        commitOptions.AllowEmptyCommit = true;
+        var GitHubArch1 = new GitHubArchive {
+            RepositoryName = "TestArchive",
+            Id = 1,
+            LatestCommit = new DateTimeOffset(new DateTime(2022, 11, 20)),
+        };
 
-        //DateTime(Year, month, day, hour, minute, day)
-        DateTimeOffset dateTimeOffset = new DateTimeOffset(new DateTime(2008, 5, 1, 8, 30, 52));
-        Signature baldur = new Signature("Baldur", "bath@itu.dk", dateTimeOffset);
-        repo.Commit("Initial commit", baldur, baldur, commitOptions);
-
-        DateTimeOffset dateTimeOffset2 = new DateTimeOffset(new DateTime(2008, 5, 1, 7, 30, 52));
-        Signature baldur2 = new Signature("Baldur", "bath@itu.dk", dateTimeOffset2);
-        repo.Commit("Duh", baldur2, baldur2, commitOptions);
-        
-        DateTimeOffset dateTimeOffset3 = new DateTimeOffset(new DateTime(2088, 5, 1, 12, 35, 40));
-        Signature baldur3 = new Signature("Baldur", "bath@itu.dk", dateTimeOffset3);
-        repo.Commit("Fixes to Duh", baldur3, baldur3, commitOptions);
-        
-        DateTimeOffset dateTimeOffset4 = new DateTimeOffset(new DateTime(2009, 5, 1, 8, 30, 52));
-        Signature benjamin = new Signature("Benjamin", "bhag@itu.dk", dateTimeOffset4);
-        repo.Commit("Best commit", benjamin, benjamin, commitOptions);
-
-        DateTimeOffset dateTimeOffset5 = new DateTimeOffset(new DateTime(2009, 5, 1, 12, 20, 41));
-        Signature nicholas = new Signature("Nicholas", "nicha@itu.dk", dateTimeOffset5);
-        repo.Commit("Foo commit", nicholas, nicholas, commitOptions);
-
-        _userRepo = new UserRepo(repo);
-
-        
-        RepositoryMethods.CommitFrequency(_userRepo, _context);
-        var archiveRepo = new GitHubArchiveRepo(_context);
-        var GitHubArch = new CreateGitHubArchiveDTO(_userRepo.Name);
-        myRepoId = archiveRepo.Create(GitHubArch).GitHubArchiveId;
+        _context.Repositories.Add(GitHubArch1);
         _context.SaveChanges();
 
         _repository = new ComFrequencyResultRepo(_context);
@@ -69,40 +54,37 @@ public class CommitFrequencyResultRepoTests
     [Fact]
 
     public void Create_Succes(){
-        var (response, createdId) = _repository.Create(new CreateComFrequencyResultDTO(1,new DateTime(2022, 11, 18), myRepoId));
+        var (response, createdId) = _repository.Create(new CreateComFrequencyResultDTO(1,new DateTime(2022, 11, 18), 1));
 
         response.Should().Be(Response.Created);
 
-        createdId.Should().Be(4);
+        createdId.Should().Be(3);
 
-        Dispose();
 
     }
 
     [Fact] 
     public void Create_alreadyExists (){
         
-        var (response, createdId) = _repository.Create(new CreateComFrequencyResultDTO(1,new DateTime(2009, 5, 1), myRepoId));
+        var (response, createdId) = _repository.Create(new CreateComFrequencyResultDTO(20,new DateTime(2022, 11, 20), 1));
 
         response.Should().Be(Response.Updated);
         
-        createdId.Should().Be(2);
+        createdId.Should().Be(1);
 
-        Dispose();
 
     }
 
     [Fact] 
     public void Find_Succes (){
         
-        var expected = new ComFrequencyResultDTO(2, 2,new DateTime(2009, 5, 1), myRepoId);
+        var expected = new ComFrequencyResultDTO(1, 10,new DateTime(2022, 11, 20), 1);
 
-        var actual = _repository.Find(2);
+        var actual = _repository.Find(1);
 
-        actual.Should().BeEquivalentTo(expected);
+        actual.Should().BeEquivalentTo(new ComFrequencyResultDTO(1, 10,new DateTime(2022, 11, 20), 1));
 
 
-        Dispose();
 
     }
 
@@ -114,33 +96,30 @@ public class CommitFrequencyResultRepoTests
         actual.Should().Be(null);
 
 
-        Dispose();
 
     }
 
     [Fact] 
     public void Update_succes_nochanges (){
 
-        var  actualValue = _repository.Find(2)!.CommitCount;
+        
         var actualResponse = _repository.Update(new UpdateComFrequencyResultDTO(2,2));
 
         actualResponse.Should().Be(Response.Updated);
 
-        _repository.Find(2)!.CommitCount.Should().Be(actualValue);
+        _repository.Find(2)!.CommitCount.Should().Be(8);
 
-        Dispose();
 
     }
     [Fact] 
     public void Update_succes_changes (){
 
-        var actual = _repository.Update(new UpdateComFrequencyResultDTO(2,3));
+        var actual = _repository.Update(new UpdateComFrequencyResultDTO(2,50));
 
         actual.Should().Be(Response.Updated);
 
-        _repository.Find(2)!.CommitCount.Should().Be(3);
+        _repository.Find(2)!.CommitCount.Should().Be(50);
 
-        Dispose();
 
     }
 
@@ -151,34 +130,13 @@ public class CommitFrequencyResultRepoTests
 
         actual.Should().Be(Response.NotFound);
 
-        Dispose();
 
     }
 
 
     public void Dispose()
-    {
-        System.IO.DirectoryInfo di = new DirectoryInfo("./coolRepo");
-
-            foreach (FileInfo file in di.GetFiles())
-            {
-                 file.Delete(); 
-            }
-            foreach (DirectoryInfo dir in di.GetDirectories())
-            {
-                try{
-                dir.Delete(true); 
-                }
-                catch (Exception e){
-                    Console.WriteLine(e.Message);
-                }
-            }
-           
-
-        repo.Dispose(); 
+    { 
         _connection.Dispose();
         _context.Dispose();
-
-        
     }
 }

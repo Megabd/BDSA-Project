@@ -23,7 +23,7 @@ public GitHubArchiveRepo (ProjectContext context){
         
         var entity = new GitHubArchive(){
             RepositoryName = GitHubArch.RepositoryName,
-            LatestCommit  = RepositoryMethods.latestCommit(GitHubArch.RepositoryName),
+            LatestCommit  = GitHubArch.LatestCommit,
             
         };
            
@@ -64,6 +64,7 @@ public GitHubArchiveRepo (ProjectContext context){
         else if (entity.LatestCommit < GitHubArch.LatestCommit){
 
             entity.LatestCommit = GitHubArch.LatestCommit;
+             _context.SaveChanges();
             return Response.Updated;
         }
          _context.SaveChanges();

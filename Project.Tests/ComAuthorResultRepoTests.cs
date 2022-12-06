@@ -1,4 +1,6 @@
 namespace Project.Tests;
+
+using System.IO.Compression;
 using LibGit2Sharp;
 using Project.Core;
 using Project.Infrastructure;
@@ -6,63 +8,55 @@ using Project.Infrastructure;
 public class ComAuthorResultRepoTests
 {
 
-    public Repository repo;
+    /*public Repository repo;
     private UserRepo _userRepo;
-    private StringWriter? _writer;
+    private StringWriter? _writer;*/
 
     private readonly SqliteConnection _connection;
     private readonly ProjectContext _context;
 
     private readonly ComAuthorResultRepo _repository;
 
-    private readonly int myRepoId;
     public ComAuthorResultRepoTests() 
     {
-
-
         _connection = new SqliteConnection("Filename=:memory:");
         _connection.Open();
         var builder = new DbContextOptionsBuilder<ProjectContext>().UseSqlite(_connection);
         _context = new ProjectContext(builder.Options);
         _context.Database.EnsureCreated();
 
-        Repository.Init("./coolRepo");
-        repo = new Repository("./coolRepo");
+        var ComAuthRes1 = new ComAuthorResult {
+            Id = 1,
+            Author = "TestAuth1",
+            CommitCount = 3,
+            CommitDate = new DateTime(2022, 11, 20),
+            RepositoryId = 1,
+        };
+            
+
+         var ComAuthRes2= new ComAuthorResult {
+            Id = 2,
+            Author = "TestAuth2",
+            CommitCount = 4,
+            CommitDate = new DateTime(2022,10, 6),
+            RepositoryId = 1
+            
+        };
+        _context.AuthorResults.AddRange(ComAuthRes1,ComAuthRes2);
         
-        var commitOptions = new CommitOptions();
-        commitOptions.AllowEmptyCommit = true;
+        var GitHubArch1 = new GitHubArchive {
+            RepositoryName = "TestArchive",
+            Id = 1,
+            LatestCommit = new DateTimeOffset(new DateTime(2022, 11, 20)),
+        };
 
-        //DateTime(Year, month, day, hour, minute, day)
-        DateTimeOffset dateTimeOffset = new DateTimeOffset(new DateTime(2008, 5, 1, 8, 30, 52));
-        Signature baldur = new Signature("Baldur", "bath@itu.dk", dateTimeOffset);
-        repo.Commit("Initial commit", baldur, baldur, commitOptions);
-
-        DateTimeOffset dateTimeOffset2 = new DateTimeOffset(new DateTime(2008, 5, 1, 7, 30, 52));
-        Signature baldur2 = new Signature("Baldur", "bath@itu.dk", dateTimeOffset2);
-        repo.Commit("Duh", baldur2, baldur2, commitOptions);
-        
-        DateTimeOffset dateTimeOffset3 = new DateTimeOffset(new DateTime(2088, 5, 1, 12, 35, 40));
-        Signature baldur3 = new Signature("Baldur", "bath@itu.dk", dateTimeOffset3);
-        repo.Commit("Fixes to Duh", baldur3, baldur3, commitOptions);
-        
-        DateTimeOffset dateTimeOffset4 = new DateTimeOffset(new DateTime(2009, 5, 1, 8, 30, 52));
-        Signature benjamin = new Signature("Benjamin", "bhag@itu.dk", dateTimeOffset4);
-        repo.Commit("Best commit", benjamin, benjamin, commitOptions);
-
-        DateTimeOffset dateTimeOffset5 = new DateTimeOffset(new DateTime(2009, 5, 1, 12, 20, 41));
-        Signature nicholas = new Signature("Nicholas", "nicha@itu.dk", dateTimeOffset5);
-        repo.Commit("Foo commit", nicholas, nicholas, commitOptions);
-
-        _userRepo = new UserRepo(repo);
+        _context.Repositories.Add(GitHubArch1);
 
         
-        RepositoryMethods.CommitAuthor(_userRepo, _context);
-        var archiveRepo = new GitHubArchiveRepo(_context);
-        var GitHubArch = new CreateGitHubArchiveDTO(_userRepo.Name);
-        myRepoId = archiveRepo.Create(GitHubArch).GitHubArchiveId;
         _context.SaveChanges();
 
         _repository = new ComAuthorResultRepo(_context);
+    
     }
 
     
@@ -70,113 +64,72 @@ public class ComAuthorResultRepoTests
 
     public void Create_Succes(){
        
-        var (response, createdId) = _repository.Create(new CreateComAuthorResultDTO("Baldur",2,new DateTime(2022, 11, 18), myRepoId));
+        var (response, createdId) = _repository.Create(new CreateComAuthorResultDTO("Baldur",2,new DateTime(2022, 11, 18), 1));
 
         response.Should().Be(Response.Created);
 
-        createdId.Should().Be(5);
-        
-        Dispose();
+        createdId.Should().Be(3);
 
     }
 
     [Fact] 
-    public void Create_alreadyExists (){
+    public void Create_alreadyExists_Should_Update (){
         
-        var (response, createdId) = _repository.Create(new CreateComAuthorResultDTO("Baldur",2,new DateTime(2008, 5, 1), myRepoId));
+        var (response, createdId) = _repository.Create(new CreateComAuthorResultDTO("TestAuth2",5,new DateTime(2022,10, 6), 1));
 
         response.Should().Be(Response.Updated);
 
-        createdId.Should().Be(1);
+        createdId.Should().Be(2);
         
-        Dispose();
-
     }
 
     [Fact] 
     public void Find_Succes (){
         
-        var expected = new ComAuthorResultDTO(1,"Baldur" ,2,new DateTime(2008, 5, 1), myRepoId);
+        var actual = _repository.Find(2);
 
-        var actual = _repository.Find(1);
-
-        actual.Should().BeEquivalentTo(expected);
-
-
-
-        Dispose();
-
+        actual.Should().BeEquivalentTo(new ComAuthorResultDTO(2,"TestAuth2" ,4,new DateTime(2022,10, 6), 1));
     }
 
      [Fact] 
     public void Find_Failure (){
-
-       
         _repository.Find(22).Should().Be(null);
-
-        Dispose();
-
     }
 
 [Fact] 
     public void Update_succes_nochanges (){
 
-        var  actualValue = _repository.Find(1)!.CommitCount;
-        var actualResponse = _repository.Update(new UpdateComAuthorResultDTO(1,2));
+        var actualResponse = _repository.Update(new UpdateComAuthorResultDTO(1,3));
 
         actualResponse.Should().Be(Response.Updated);
 
-        _repository.Find(1)!.CommitCount.Should().Be(actualValue);
+        _repository.Find(1).CommitCount.Should().Be(3);
 
-        Dispose();
 
     }
     [Fact] 
     public void Update_succes_changes (){
 
-        var actualResponse = _repository.Update(new UpdateComAuthorResultDTO(1,3));
+        var actualResponse = _repository.Update(new UpdateComAuthorResultDTO(1,6));
 
         actualResponse.Should().Be(Response.Updated);
 
-        _repository.Find(1)!.CommitCount.Should().Be(3);
-
-        Dispose();
+        _repository.Find(1)!.CommitCount.Should().Be(6);
 
     }
 
- [Fact] 
+    [Fact] 
     public void Update_Fail (){
 
         _repository.Update(new UpdateComAuthorResultDTO(22,3)).Should().Be(Response.NotFound);
-
-        Dispose();
 
     }
 
 
     public void Dispose()
     {
-        System.IO.DirectoryInfo di = new DirectoryInfo("./coolRepo");
-
-            foreach (FileInfo file in di.GetFiles())
-            {
-                 file.Delete(); 
-            }
-            foreach (DirectoryInfo dir in di.GetDirectories())
-            {
-                try{
-                dir.Delete(true); 
-                }
-                catch (Exception e){
-                    Console.WriteLine(e.Message);
-                }
-            }
-           
-
-        repo.Dispose(); 
-        _connection.Dispose();
         _context.Dispose();
-
+        _connection.Dispose();
         
     }
 }
