@@ -57,12 +57,12 @@ public class RepositoryMethods
         return FetchAuthorData(createResponse.GitHubArchiveId, context);
     }
 
-    public static int RepoForks(UserRepo archive, ProjectContext context) {
+    public static async Task<int> RepoForks(UserRepo archive, ProjectContext context, string apiKey) {
         var archiveRepo = new GitHubArchiveRepo(context);
         var GitHubArch = new CreateGitHubArchiveDTO(archive.Name, latestCommit(archive));
         var createResponse = archiveRepo.Create(GitHubArch);
 
-        GetForks(archive.Name, createResponse.GitHubArchiveId, context);
+        await GetForks(archive.Name, createResponse.GitHubArchiveId, context, apiKey);
         return FetchForkData(createResponse.GitHubArchiveId, context).FirstOrDefault();
     }
 
@@ -150,10 +150,10 @@ public class RepositoryMethods
     }
 
 
-    public static async void GetForks(string repoName, int Id, ProjectContext context) {
+    public static async Task GetForks(string repoName, int Id, ProjectContext context, string apiKey) {
 
         var client = new GitHubClient(new ProductHeaderValue("Github-insights"));
-        var token = new Octokit.Credentials("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");
+        var token = new Octokit.Credentials(apiKey);
         client.Credentials = token;
 
         var repoNameSplit = repoName.Split(@"\");
@@ -163,14 +163,10 @@ public class RepositoryMethods
         Console.WriteLine(repoNameSplit[2] + repoNameSplit[3]);
 
         var forks = await client.Repository.Forks.GetAll(repoNameSplit[2], repoNameSplit[3]);
-        //foreach (var fork in forks) {
-            
-        //}
-        
-        //var forkRepo = new ForkRepo(context);
         var archiveRepo = new GitHubArchiveRepo(context);
         var forkCount = forks.Count;
         archiveRepo.UpdateForkAmount(new UpdateGIthubArchiveForksDTO(Id, forkCount));
+        return;
         
     }
 
