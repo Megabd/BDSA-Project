@@ -24,8 +24,7 @@
 # Non-functional Requirements
 
 1. The project should include a test-suite.
-    - The individual tests should be unit-tests.
-    - The REST API should be tested via relevant integration tests.
+    - The individual tests should both be unit-tests and integration tests.
     - The test-suite should test the persistance of the program.
     - Upon pushing to main, a Github Actions workflow should ensure that the program passes the test-suite.
 2. The project should include documentation covering:
