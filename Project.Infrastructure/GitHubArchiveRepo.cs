@@ -26,7 +26,6 @@ public GitHubArchiveRepo (ProjectContext context){
             LatestCommit  = GitHubArch.LatestCommit,
             
         };
-           
         _context.Repositories.Add(entity);
         _context.SaveChanges();
 
@@ -37,9 +36,18 @@ public GitHubArchiveRepo (ProjectContext context){
         return (response, created.Id);
         }
         else {
-            response = Response.Conflict;
             int id = existingId.FirstOrDefault();
-            return (response , id);
+            var existingRepo = Find(id);
+            if (existingRepo.LatestCommit == GitHubArch.LatestCommit){
+                response = Response.Fetched;
+                return (response , id);
+            } 
+            else {
+                Update(new UpdateGitHubArchiveDTO(id, GitHubArch.LatestCommit));
+                response = Response.Updated;
+                return (response , id);
+            }
+            
         }
     }
     
@@ -70,5 +78,17 @@ public GitHubArchiveRepo (ProjectContext context){
          _context.SaveChanges();
         return Response.Updated;
      }
+
+    public Response UpdateForkAmount(UpdateGIthubArchiveForksDTO GitHubArch) {
+        var entity = _context.Repositories.Find(GitHubArch.Id);
+        if (entity == null){
+            return Response.NotFound;
+        }
+        else {
+            entity.ForkAmount = GitHubArch.ForkAmount;
+             _context.SaveChanges();
+            return Response.Updated;
+        }
+    }
 
 }

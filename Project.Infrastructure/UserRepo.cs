@@ -54,49 +54,5 @@ public class UserRepo
     }
 
 
-    public void CommitFrequency()
-    {
-        var listOfUniqueDates = (
-        from author in CommitList
-        orderby author.aDate
-        group author by new { author.aDate.Date } into g
-        select new { date = g.Key, count = g.Count() }
-     );
-
-        foreach (var output in listOfUniqueDates)
-        {
-            Console.WriteLine(output.count + " " + output.date.Date.ToString("dd-MM-yyyy"));
-        }
-
-    }
-
-    public void CommitAuthor()
-    {
-        var authorNameList = (
-           (from author in CommitList
-            orderby author.Author
-            select new { name = author.Author }).Distinct()
-        );
-        
-        foreach (var distAuthor in authorNameList)
-        {
-            Console.WriteLine(distAuthor.name);
-
-            var listOfAuthorsCommitHistorie = (
-            from author in CommitList
-            where author.Author == distAuthor.name
-            orderby author.aDate
-            group author by new
-            {
-                author.aDate,
-                author.aDate.Date
-            } into g
-            select new { key = g.Key, count = g.Count() }
-            );
-            foreach (var comDate in listOfAuthorsCommitHistorie)
-            {
-                Console.WriteLine("      " + comDate.count + " " + comDate.key.Date.ToString("dd-MM-yyyy"));
-            }
-        }
-    }
+    
 }

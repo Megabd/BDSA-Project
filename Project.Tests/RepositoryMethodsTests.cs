@@ -2,7 +2,7 @@ namespace Project.Tests;
 using LibGit2Sharp;
 using Project;
 using Project.Infrastructure;
-using System.IO.Compression;
+using System.IO.Compression; 
 
 // Tests that the program prints the correct results
 public class RepositoryMethodsTests {
@@ -44,15 +44,17 @@ public class RepositoryMethodsTests {
 
     public void Test_Commit_Frequency () {
         var test = RepositoryMethods.CommitFrequency(archive, _context);
-        var testResult = new Dictionary<string, int>();
-        testResult.Add("16-09-2021", 2);
-        testResult.Add("17-09-2021", 5);
-        testResult.Add("14-09-2022", 1);
-        testResult.Add("15-09-2022", 2);
-        testResult.Add("16-09-2022", 3);
-        testResult.Add("20-09-2022", 6);
-        testResult.Add("21-09-2022", 2);
-        testResult.Add("22-09-2022", 3);
+        var finaltest = test.Select(s=> new ComFrequencyResult()).ToList();
+        var testResult = new List<ComFrequencyResult>();
+        testResult.Add(new ComFrequencyResult {CommitDate = new DateTime(2021, 09, 16), CommitCount = 2 });
+        testResult.Add(new ComFrequencyResult {CommitDate = new DateTime(2021, 09, 17), CommitCount = 5 });
+        testResult.Add(new ComFrequencyResult {CommitDate = new DateTime(2022, 09, 14), CommitCount =1 });
+        testResult.Add(new ComFrequencyResult {CommitDate = new DateTime(2022, 09, 15), CommitCount = 2 });
+        testResult.Add(new ComFrequencyResult {CommitDate = new DateTime(2022, 09, 16), CommitCount = 3 });
+        testResult.Add(new ComFrequencyResult {CommitDate = new DateTime(2022, 09, 20), CommitCount = 6 });
+        testResult.Add(new ComFrequencyResult {CommitDate = new DateTime(2022, 09, 11), CommitCount = 2 });
+        testResult.Add(new ComFrequencyResult {CommitDate = new DateTime(2022, 09, 22), CommitCount = 3 });
+
         test.Should().BeEquivalentTo(testResult);
 
         //DeleteReadOnlyDirectory("C:/Users/olive/ADS/BDSA-Project/Project.Tests/extract");

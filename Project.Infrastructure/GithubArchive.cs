@@ -10,4 +10,6 @@ public class GitHubArchive {
 
     public DateTimeOffset LatestCommit {get; set;}
 
+    public int ForkAmount {get; set;}
+
 }
