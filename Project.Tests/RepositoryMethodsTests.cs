@@ -44,7 +44,12 @@ public class RepositoryMethodsTests {
 
     public void Test_Commit_Frequency () {
         var test = RepositoryMethods.CommitFrequency(archive, _context);
-        var finaltest = test.Select(s=> new ComFrequencyResult()).ToList();
+        var finaltest = test.Select(s=> new {s.CommitDate, s.CommitCount}).ToList();
+        var finaltestList = new List<ComFrequencyResult>();
+        foreach (var res in finaltest){
+            finaltestList.Add(new ComFrequencyResult {CommitDate = res.CommitDate, CommitCount = res.CommitCount});
+        }
+
         var testResult = new List<ComFrequencyResult>();
         testResult.Add(new ComFrequencyResult {CommitDate = new DateTime(2021, 09, 16), CommitCount = 2 });
         testResult.Add(new ComFrequencyResult {CommitDate = new DateTime(2021, 09, 17), CommitCount = 5 });
@@ -52,39 +57,50 @@ public class RepositoryMethodsTests {
         testResult.Add(new ComFrequencyResult {CommitDate = new DateTime(2022, 09, 15), CommitCount = 2 });
         testResult.Add(new ComFrequencyResult {CommitDate = new DateTime(2022, 09, 16), CommitCount = 3 });
         testResult.Add(new ComFrequencyResult {CommitDate = new DateTime(2022, 09, 20), CommitCount = 6 });
-        testResult.Add(new ComFrequencyResult {CommitDate = new DateTime(2022, 09, 11), CommitCount = 2 });
+        testResult.Add(new ComFrequencyResult {CommitDate = new DateTime(2022, 09, 21), CommitCount = 2 });
         testResult.Add(new ComFrequencyResult {CommitDate = new DateTime(2022, 09, 22), CommitCount = 3 });
+        
+        finaltestList.Should().BeEquivalentTo(testResult);
 
-        test.Should().BeEquivalentTo(testResult);
-
-        //DeleteReadOnlyDirectory("C:/Users/olive/ADS/BDSA-Project/Project.Tests/extract");
     }
 
 
     [Fact]
     public void Test_Commit_Author() {
-        /*var test = RepositoryMethods.CommitAuthor(archive, _context);
-        var innerDic = new Dictionary<string, int>();
-        var innerDic1 = new Dictionary<string, int>();
-        var innerDic2 = new Dictionary<string, int>();
-        var innerDic3 = new Dictionary<string, int>();
-        var innerDic4 = new Dictionary<string, int>();
-        var innerDic5 = new Dictionary<string, int>();
+        var test = RepositoryMethods.CommitAuthor(archive, _context);
+        var finaltest = test.Select(s=> new {s.CommitDate, s.CommitCount, s.Author}).ToList();
+        var finaltestList = new List<ComAuthorResult>();
+        foreach (var res in finaltest){
+            finaltestList.Add(new ComAuthorResult {CommitDate = res.CommitDate, CommitCount = res.CommitCount, Author = res.Author});
+        }
 
-        innerDic.Add("15-09-2022", 1);
-        innerDic.Add("16-09-2022", 2);
-        innerDic1.Add("22-09-2022", 1);
-        innerDic2.Add("20-09-2022", 3);
-        innerDic2.Add("21-09-2022", 2);
-        innerDic3.Add("17-09-2021", 5);
-        innerDic4.Add("16-09-2021", 2);
-        innerDic4.Add("14-09-2022", 1);
-        innerDic4.Add("15-09-2022", 1);
-        innerDic4.Add("16-09-2022", 1);
-        innerDic5.Add("20-09-2022", 3);
-        innerDic5.Add("22-09-2022", 2);
+        var testResult = new List<ComAuthorResult >();
+        testResult.Add(new ComAuthorResult {CommitDate = new DateTime(2022, 09, 15), CommitCount = 1 , Author = "HelgeCPH"});
+        testResult.Add(new ComAuthorResult  {CommitDate = new DateTime(2022, 09, 16), CommitCount = 2, Author = "HelgeCPH"});
+        testResult.Add(new ComAuthorResult  {CommitDate = new DateTime(2022, 09, 22), CommitCount =1, Author = "Lignio"});
+        testResult.Add(new ComAuthorResult  {CommitDate = new DateTime(2022, 09, 20), CommitCount = 3, Author = "Oliver Flyckt Wilhjelm"});
+        testResult.Add(new ComAuthorResult  {CommitDate = new DateTime(2022, 09, 21), CommitCount = 2 , Author = "Oliver Flyckt Wilhjelm"});
+        testResult.Add(new ComAuthorResult  {CommitDate = new DateTime(2021, 09, 17), CommitCount = 5 , Author = "Paolo Tell"});
+        testResult.Add(new ComAuthorResult  {CommitDate = new DateTime(2021, 09, 16), CommitCount = 2 , Author = "Rasmus Lystrøm"});
+        testResult.Add(new ComAuthorResult  {CommitDate = new DateTime(2022, 09, 14), CommitCount = 1 , Author = "Rasmus Lystrøm"});
+        testResult.Add(new ComAuthorResult  {CommitDate = new DateTime(2022, 09, 15), CommitCount = 1 , Author = "Rasmus Lystrøm"});
+        testResult.Add(new ComAuthorResult  {CommitDate = new DateTime(2022, 09, 16), CommitCount = 1 , Author = "Rasmus Lystrøm"});
+        testResult.Add(new ComAuthorResult  {CommitDate = new DateTime(2022, 09, 20), CommitCount = 3 , Author = "tlca"});
+        testResult.Add(new ComAuthorResult  {CommitDate = new DateTime(2022, 09, 22), CommitCount = 3 , Author = "tlca"});
+        //innerDic.Add("15-09-2022", 1);
+        //innerDic.Add("16-09-2022", 2);
+        //innerDic1.Add("22-09-2022", 1);
+        //innerDic2.Add("20-09-2022", 3);
+        //innerDic2.Add("21-09-2022", 2);
+        //innerDic3.Add("17-09-2021", 5);
+        //innerDic4.Add("16-09-2021", 2);
+        //innerDic4.Add("14-09-2022", 1);
+        //innerDic4.Add("15-09-2022", 1);
+        //innerDic4.Add("16-09-2022", 1);
+       // innerDic5.Add("20-09-2022", 3);
+       // innerDic5.Add("22-09-2022", 2);
         
-        var testResult = new Dictionary<string, Dictionary<string, int>> {
+        /*var testResult = new Dictionary<string, Dictionary<string, int>> {
             {" name = HelgeCPH ", innerDic},
             {" name = Lignio ", innerDic1},
             {" name = Oliver Flyckt Wilhjelm ", innerDic2},
@@ -92,15 +108,15 @@ public class RepositoryMethodsTests {
             {" name = Rasmus Lystrøm ", innerDic4},
             {" name = tcla ", innerDic5}
         };
-        /*testResult.Add("name = HelgeCPH", innerDic);
+        testResult.Add("name = HelgeCPH", innerDic);
         testResult.Add("name = Lignio", innerDic1);
         testResult.Add("name = Oliver Flyckt Wilhjelm", innerDic2);
         testResult.Add("name = Paolo Tell", innerDic3);
         testResult.Add("name = Rasmus Lystrøm", innerDic4);
         testResult.Add("name = tcla", innerDic5);*/
-        /*
-        test.Should().Equal(testResult);*/
-    } 
+        
+        finaltestList.Should().BeEquivalentTo(testResult); 
+    }
 
     
  public static void DeleteReadOnlyDirectory(string directory)

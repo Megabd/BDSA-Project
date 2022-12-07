@@ -96,9 +96,6 @@ public class RepositoryMethods
                 comAuthResultRepo.Create(createComAuthResult);
             }
 
-
-            //GetForks(archive.Name, archive.Id, context);
-
         }
 
         var comFrequencyResultRepo = new ComFrequencyResultRepo(context);

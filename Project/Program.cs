@@ -21,11 +21,17 @@ public class Program
         string consoleInput = Console.ReadLine()!;
         if (consoleInput == "1")
         {
-           RepositoryMethods.CommitFrequency(repo, context);
+           var output = RepositoryMethods.CommitFrequency(repo, context);
+           foreach(var v in output) {
+            Console.WriteLine(v.CommitDate + " " + v.CommitCount);
+           }
         }
         else if (consoleInput == "2")
         {
-            RepositoryMethods.CommitAuthor(repo, context);
+            var output = RepositoryMethods.CommitAuthor(repo, context);
+             foreach(var v in output){
+            Console.WriteLine(v.Author +" "+ v.CommitCount + " " + v.CommitDate.ToString());
+            }
         }
         else if (consoleInput == "666")
         {

@@ -61,7 +61,7 @@ public class GitHubArchiveRepoTests {
         
         var actual = _repository.Create(new CreateGitHubArchiveDTO("TestArchive", new DateTimeOffset(new DateTime(2022, 11, 20))));
         
-        actual.Response.Should().Be(Response.Conflict);
+        actual.Response.Should().Be(Response.Fetched);
         actual.GitHubArchiveId.Should().Be(1);
 
     }

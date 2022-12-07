@@ -27,11 +27,8 @@ public (Response Response, int ComAutResId) Create(CreateComAuthorResultDTO ComA
             CommitCount = ComAutRes.CommitCount,
             CommitDate = ComAutRes.CommitDate,
             RepositoryId = ComAutRes.RepositoryId
-
         }; 
 
-       
-           
         _context.AuthorResults.Add(entity);
         
         _context.SaveChanges();
